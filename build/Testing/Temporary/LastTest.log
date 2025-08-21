@@ -1,0 +1,68 @@
+Start testing: Aug 21 01:24 PDT
+----------------------------------------------------------
+1/4 Testing: basic
+1/4 Test: basic
+Command: "/Users/eirikr/Documents/GitHub/CoinSorter/build/bin/test_basic"
+Directory: /Users/eirikr/Documents/GitHub/CoinSorter/build
+"basic" start time: Aug 21 01:24 PDT
+Output:
+----------------------------------------------------------
+basic tests passed
+<end of output>
+Test time =   0.37 sec
+----------------------------------------------------------
+Test Passed.
+"basic" end time: Aug 21 01:24 PDT
+"basic" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/4 Testing: sim
+2/4 Test: sim
+Command: "/Users/eirikr/Documents/GitHub/CoinSorter/build/bin/test_sim"
+Directory: /Users/eirikr/Documents/GitHub/CoinSorter/build
+"sim" start time: Aug 21 01:24 PDT
+Output:
+----------------------------------------------------------
+sim tests passed
+<end of output>
+Test time =   0.29 sec
+----------------------------------------------------------
+Test Passed.
+"sim" end time: Aug 21 01:24 PDT
+"sim" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/4 Testing: coin_adv
+3/4 Test: coin_adv
+Command: "/Users/eirikr/Documents/GitHub/CoinSorter/build/bin/test_coin_adv"
+Directory: /Users/eirikr/Documents/GitHub/CoinSorter/build
+"coin_adv" start time: Aug 21 01:24 PDT
+Output:
+----------------------------------------------------------
+warning: mass/diam solutions identical
+advanced coin tests passed
+<end of output>
+Test time =   2.37 sec
+----------------------------------------------------------
+Test Passed.
+"coin_adv" end time: Aug 21 01:24 PDT
+"coin_adv" time elapsed: 00:00:02
+----------------------------------------------------------
+
+4/4 Testing: area
+4/4 Test: area
+Command: "/Users/eirikr/Documents/GitHub/CoinSorter/build/bin/test_area"
+Directory: /Users/eirikr/Documents/GitHub/CoinSorter/build
+"area" start time: Aug 21 01:24 PDT
+Output:
+----------------------------------------------------------
+area test passed (coins=8 area=3133.1976)
+<end of output>
+Test time =   0.27 sec
+----------------------------------------------------------
+Test Passed.
+"area" end time: Aug 21 01:24 PDT
+"area" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Aug 21 01:24 PDT

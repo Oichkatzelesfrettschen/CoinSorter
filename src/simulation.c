@@ -1,3 +1,8 @@
+/**
+ * \file simulation.c
+ * \brief Simulation utilities: fractal generation, Poisson solver, vector
+ * field, and tiny MLP.
+ */
 #include "simulation.h"
 #include <math.h>
 #include <stdio.h>
@@ -10,6 +15,7 @@
 #endif
 /* Portable fast RNG (xorshift32) to avoid rand() quality issues */
 static unsigned rng_state = 2463534242u;
+/** \brief Fast xorshift32 PRNG advancing global state. */
 static inline unsigned xorshift32(void) {
   unsigned x = rng_state;
   x ^= x << 13;
@@ -18,13 +24,92 @@ static inline unsigned xorshift32(void) {
   rng_state = x;
   return x;
 }
+/** \brief PRNG helper returning uniform double in [0,1). */
 static inline double frand(void) {
   return (xorshift32() & 0xFFFFFF) / (double)0x1000000;
 }
 
-/**
- * @brief Generate fallback noise field (placeholder fBm) in [-0.5,0.5].
+/* Hash-based 2D value noise helper */
+/** \brief 2D integer hash mixing coordinates and seed. */
+static inline unsigned vh(uint32_t x, uint32_t y, unsigned seed) {
+  uint32_t h = x * 374761393u + y * 668265263u + seed * 362437u;
+  h = (h ^ (h >> 13)) * 1274126177u;
+  return h ^ (h >> 16);
+}
+/** \brief Linear interpolation. */
+static inline double lerp(double a, double b, double t) {
+  return a + (b - a) * t;
+}
+/** \brief Quintic fade function for smooth interpolation. */
+static inline double fade(double t) {
+  return t * t * t * (t * (t * 6 - 15) + 10);
+}
+
+/** \brief Multi-octave value noise generator normalized to [-1,1].
+ *  \param field Output buffer size nx*ny.
+ *  \param nx Width.
+ *  \param ny Height.
+ *  \param seed Base seed (octave index is mixed in internally).
+ *  \param octaves Number of blended frequency octaves (>=1).
  */
+void generate_value_noise(double *field, int nx, int ny, unsigned seed,
+                          int octaves) {
+  if (octaves < 1)
+    octaves = 1;
+  double *acc = field;
+  for (int i = 0; i < nx * ny; ++i)
+    acc[i] = 0.0;
+  double max_amp = 0.0;
+  double amp = 1.0;
+  double freq = 1.0;
+  for (int o = 0; o < octaves; ++o) {
+    for (int y = 0; y < ny; ++y) {
+      for (int x = 0; x < nx; ++x) {
+        double fx = x * freq / nx;
+        double fy = y * freq / ny;
+        int x0 = (int)floor(fx);
+        int y0 = (int)floor(fy);
+        double tx = fx - x0;
+        double ty = fy - y0;
+        int x1 = x0 + 1;
+        int y1 = y0 + 1;
+        unsigned a = vh((unsigned)x0, (unsigned)y0, seed + o);
+        unsigned b = vh((unsigned)x1, (unsigned)y0, seed + o);
+        unsigned c = vh((unsigned)x0, (unsigned)y1, seed + o);
+        unsigned d = vh((unsigned)x1, (unsigned)y1, seed + o);
+        double fa = (a & 0xFFFF) / 65535.0;
+        double fb = (b & 0xFFFF) / 65535.0;
+        double fc = (c & 0xFFFF) / 65535.0;
+        double fd = (d & 0xFFFF) / 65535.0;
+        double u = fade(tx);
+        double v = fade(ty);
+        double ix0 = lerp(fa, fb, u);
+        double ix1 = lerp(fc, fd, u);
+        double val = lerp(ix0, ix1, v);
+        acc[y * nx + x] += val * amp;
+      }
+    }
+    max_amp += amp;
+    amp *= 0.5;
+    freq *= 2.0;
+  }
+  double inv = max_amp > 0 ? 1.0 / max_amp : 1.0;
+  double mn = 1e9, mx = -1e9;
+  for (int i = 0; i < nx * ny; ++i) {
+    acc[i] *= inv;
+    if (acc[i] < mn)
+      mn = acc[i];
+    if (acc[i] > mx)
+      mx = acc[i];
+  }
+  if (mx > mn) {
+    double scale = 2.0 / (mx - mn);
+    for (int i = 0; i < nx * ny; ++i)
+      acc[i] = -1.0 + (acc[i] - mn) * scale;
+  }
+}
+
+/** Generate fallback noise field (placeholder fBm) in [-0.5,0.5]. */
 void generate_fbm(double *field, int nx, int ny, double hurst) {
   (void)hurst;
   rng_state ^= (unsigned)time(NULL);
@@ -32,14 +117,7 @@ void generate_fbm(double *field, int nx, int ny, double hurst) {
     field[i] = frand() - 0.5;
 }
 /* diamond-square requires square size 2^k + 1 */
-/**
- * @brief Diamond-square fractal generator (fBm style) normalized to [-1,1].
- * @param f output buffer size N*N
- * @param N size (must be 2^k + 1)
- * @param H Hurst exponent (0,1)
- * @param seed RNG seed
- * @return 0 on success, -1 if size invalid
- */
+/** Diamond-square fractal generator (fBm style) normalized to [-1,1]. */
 int fbm_diamond_square(double *f, int N, double H, unsigned seed) {
   int size = N;
   int m = size - 1;
@@ -112,9 +190,7 @@ int fbm_diamond_square(double *f, int N, double H, unsigned seed) {
   return 0;
 }
 
-/**
- * @brief Write field as grayscale PPM (auto normalize).
- */
+/** Write field as grayscale PPM (auto normalize). */
 int write_field_ppm(const char *filename, const double *field, int nx, int ny) {
   FILE *fp = fopen(filename, "wb");
   if (!fp)
@@ -138,12 +214,14 @@ int write_field_ppm(const char *filename, const double *field, int nx, int ny) {
   fclose(fp);
   return 1;
 }
+/** Placeholder forward raytrace. */
 void forward_raytrace(const double *field, int nx, int ny) {
   (void)field;
   (void)nx;
   (void)ny;
   puts("[sim] forward_raytrace stub");
 }
+/** Placeholder inverse retrieval. */
 void inverse_retrieve(const double *obs, int n, double *recon) {
   (void)obs;
   (void)n;
@@ -151,6 +229,7 @@ void inverse_retrieve(const double *obs, int n, double *recon) {
   puts("[sim] inverse_retrieve stub");
 }
 
+/** Jacobi iterations returning average absolute residual. */
 double poisson_jacobi(double *phi, const double *rhs, int nx, int ny,
                       int iters) {
   double *next = (double *)malloc(sizeof(double) * nx * ny);
@@ -177,6 +256,7 @@ double poisson_jacobi(double *phi, const double *rhs, int nx, int ny,
   return res;
 }
 
+/** Central-difference gradient. */
 void compute_deflection(const double *field, int nx, int ny, double *out_dx,
                         double *out_dy) {
   for (int y = 0; y < ny; ++y) {
@@ -192,6 +272,7 @@ void compute_deflection(const double *field, int nx, int ny, double *out_dx,
   }
 }
 
+/** Write PPM with optional vector magnitude overlay at stride sampling. */
 int write_field_with_vectors_ppm(const char *filename, const double *field,
                                  const double *dx, const double *dy, int nx,
                                  int ny, int stride) {
@@ -233,6 +314,7 @@ int write_field_with_vectors_ppm(const char *filename, const double *field,
   return 1;
 }
 
+/** Initialize MLP parameters. */
 int mlp_init(MLP *m, int in_dim, int hid_dim, int out_dim, unsigned seed) {
   m->in_dim = in_dim;
   m->hid_dim = hid_dim;
@@ -252,6 +334,7 @@ int mlp_init(MLP *m, int in_dim, int hid_dim, int out_dim, unsigned seed) {
     m->w2[i] = (frand() - 0.5) * 0.2;
   return 0;
 }
+/** Free MLP buffers. */
 void mlp_free(MLP *m) {
   if (!m)
     return;
@@ -261,6 +344,7 @@ void mlp_free(MLP *m) {
   free(m->b2);
   memset(m, 0, sizeof(*m));
 }
+/** Forward pass single sample. */
 void mlp_forward(const MLP *m, const double *x, double *y) {
   double *h = (double *)malloc(sizeof(double) * m->hid_dim);
   for (int j = 0; j < m->hid_dim; ++j) {
@@ -277,6 +361,7 @@ void mlp_forward(const MLP *m, const double *x, double *y) {
   }
   free(h);
 }
+/** One SGD epoch over dataset. */
 void mlp_train_epoch(MLP *m, const double *xs, const double *ys, int n_samples,
                      double lr) {
   /* Simple SGD with MSE, no batching */

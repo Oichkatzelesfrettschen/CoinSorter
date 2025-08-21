@@ -1,3 +1,8 @@
+/**
+ * \file coin_algorithms.c
+ * \brief Implementations for coin change algorithms, objective-weighted DP,
+ * canonical audit, and JSON formatting.
+ */
 #include "coins.h"
 #include <limits.h>
 #include <math.h>
@@ -7,6 +12,7 @@
 
 /* ---------------- Algorithms Implementation ---------------- */
 
+/** \brief Greedy change-making (descending coin order). */
 int greedy_make_change(const CoinSystem *sys, int amount, int *counts) {
   for (size_t i = 0; i < sys->ncoins; ++i) {
     counts[i] = amount / sys->coins[i].value;
@@ -15,6 +21,7 @@ int greedy_make_change(const CoinSystem *sys, int amount, int *counts) {
   return amount == 0 ? 0 : -1;
 }
 
+/** \brief Optimal (minimum coin count) dynamic programming solver. */
 int dp_make_change(const CoinSystem *sys, int amount, int *counts) {
   if (amount < 0)
     return -1;
@@ -59,6 +66,10 @@ int dp_make_change(const CoinSystem *sys, int amount, int *counts) {
   return 0;
 }
 
+/** \brief Test if system is canonical (greedy == optimal up to bound).
+ *  \param search_limit Optional limit; if 0 derive from product of top two
+ * values.
+ */
 int audit_canonical(const CoinSystem *sys, int search_limit, int *ex_amount) {
   if (search_limit < 0)
     search_limit = 0;
@@ -96,17 +107,40 @@ int audit_canonical(const CoinSystem *sys, int search_limit, int *ex_amount) {
   return 1;
 }
 
+/** \brief Serialize change result to compact JSON buffer.
+ *  Includes aggregate mass/diameter and objective meta.
+ */
 int format_change_json(const CoinSystem *sys, int amount, const int *counts,
                        const char *strategy, const char *version, char *buf,
                        size_t buflen) {
   double mass = total_mass(sys, counts);
   double diam = total_diameter(sys, counts);
+  int total_coins = 0;
+  for (size_t i = 0; i < sys->ncoins; ++i)
+    total_coins += counts[i];
+  const char *objective = "count";
+  double objective_value = (double)total_coins;
+  if (strategy) {
+    if (strncmp(strategy, "dp-mass", 7) == 0) {
+      objective = "mass";
+      objective_value = (mass > 0 ? mass : 0.0);
+    } else if (strncmp(strategy, "dp-diam", 7) == 0) {
+      objective = "diameter";
+      objective_value = (diam > 0 ? diam : 0.0);
+    } else if (strncmp(strategy, "dp-area", 7) == 0) {
+      objective = "area";
+      double area = total_area(sys, counts);
+      objective_value = (area > 0 ? area : 0.0);
+    }
+  }
   int used = snprintf(
       buf, buflen,
       "{\"system\":\"%s\",\"amount\":%d,\"strategy\":\"%s\",\"version\":\"%s\","
-      "\"mass_g\":%.4f,\"diameter_mm\":%.4f,\"coins\":[",
+      "\"mass_g\":%.4f,\"diameter_mm\":%.4f,\"total_coins\":%d,\"objective\":"
+      "\"%s\",\"objective_value\":%.6g,\"coins\":[",
       sys->system_name, amount, strategy ? strategy : "",
-      version ? version : "", mass > 0 ? mass : 0.0, diam > 0 ? diam : 0.0);
+      version ? version : "", mass > 0 ? mass : 0.0, diam > 0 ? diam : 0.0,
+      total_coins, objective, objective_value);
   if (used < 0 || (size_t)used >= buflen)
     return -1;
   size_t pos = used;
@@ -125,6 +159,7 @@ int format_change_json(const CoinSystem *sys, int amount, const int *counts,
   return 0;
 }
 
+/** \brief Compute total mass (g) or -1 if any mass unknown. */
 double total_mass(const CoinSystem *sys, const int *counts) {
   double mass = 0.0;
   int have = 0;
@@ -137,6 +172,7 @@ double total_mass(const CoinSystem *sys, const int *counts) {
   return have ? mass : -1.0;
 }
 
+/** \brief Compute total diameter sum (mm) or -1 if any diameter unknown. */
 double total_diameter(const CoinSystem *sys, const int *counts) {
   double sum = 0.0;
   int have = 0;
@@ -149,6 +185,26 @@ double total_diameter(const CoinSystem *sys, const int *counts) {
   return have ? sum : -1.0;
 }
 
+/** \brief Compute total planar area (mm^2) or -1 if diameter metadata missing.
+ */
+double total_area(const CoinSystem *sys, const int *counts) {
+  double sum = 0.0;
+  int have = 0;
+  for (size_t i = 0; i < sys->ncoins; ++i) {
+    double d = sys->coins[i].diameter_mm;
+    if (d > 0) {
+      double r = 0.5 * d;
+      double a = M_PI * r * r;
+      sum += a * counts[i];
+      have = 1;
+    }
+  }
+  return have ? sum : -1.0;
+}
+
+/** \brief Multi-objective DP optimizing weighted sum (mass or diameter) with
+ * coin-count tie break. Fallback weights of 1 if metadata missing.
+ */
 int dp_make_change_opt(const CoinSystem *sys, int amount, int *counts,
                        OptimizeMode mode) {
   if (mode == OPT_COUNT)
@@ -173,8 +229,15 @@ int dp_make_change_opt(const CoinSystem *sys, int amount, int *counts,
     for (size_t i = 0; i < sys->ncoins; ++i) {
       int v = sys->coins[i].value;
       if (v <= a && dp[a - v].last != -3) {
-        double w = (mode == OPT_MASS ? sys->coins[i].mass_g
-                                     : sys->coins[i].diameter_mm);
+        double w;
+        if (mode == OPT_MASS)
+          w = sys->coins[i].mass_g;
+        else if (mode == OPT_DIAMETER)
+          w = sys->coins[i].diameter_mm;
+        else /* OPT_AREA */ {
+          double d = sys->coins[i].diameter_mm;
+          w = (d > 0) ? (M_PI * 0.25 * d * d) : 0; /* area */
+        }
         if (w <= 0)
           w = 1.0; /* fallback weight */
         double cand_p = dp[a - v].primary + w;

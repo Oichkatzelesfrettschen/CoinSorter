@@ -1,4 +1,6 @@
-/* Interactive UI (dependency-free) */
+/** \file superforce_ui.c
+ *  \brief Minimal interactive (non-ncurses) UI for demonstrations.
+ */
 #include <ctype.h>
 #include <locale.h>
 #include <math.h>
@@ -30,10 +32,12 @@ typedef struct {
   double *fbm_field; /* last generated fBm */
 } AppState;
 
+/** Print banner. */
 static void banner(void) {
   printf("Superforce UI v%s\n", COINSORTER_VERSION_STR);
 }
 
+/** Display concise current state summary. */
 static void show_state(const AppState *S) {
   printf("System=%s amt=%d opt=%s env=%s g=%.3f thermal=%s fbm=%d H=%.2f %s\n",
          S->coin_sys->system_name, S->amount,
@@ -43,6 +47,7 @@ static void show_state(const AppState *S) {
          S->fbm_H, S->fbm_field ? "[fbm]" : "");
 }
 
+/** Show command help. */
 static void help_menu(void) {
   puts("Commands:\n"
        "  c  cycle coin system (usd/eur)\n"
@@ -56,12 +61,15 @@ static void help_menu(void) {
        "  r  regenerate fBm with last params\n"
        "  P  Poisson solve on last fBm -> ui_poisson_phi.ppm\n"
        "  V  vector overlay -> ui_fbm_vectors.ppm\n"
-  "  m  train tiny MLP demo (identity 2->2)\n"
+       "  m  train tiny MLP demo (identity 2->2)\n"
+       "  M  train MLP with debug loss prints\n"
+       "  C  toggle color on/off\n"
        "  b  benchmark coin change\n"
        "  h  help\n"
        "  q  quit");
 }
 
+/** Cycle to next environment. */
 static const Environment *cycle_env(const Environment *cur) {
   const char *order[] = {"earth", "moon", "mars", "orbit"};
   size_t n = sizeof(order) / sizeof(order[0]);
@@ -75,6 +83,7 @@ static const Environment *cycle_env(const Environment *cur) {
   return get_environment(order[idx]);
 }
 
+/** Compute and print coin change result. */
 static void do_coin_change(const AppState *S) {
   int counts[32];
   memset(counts, 0, sizeof(counts));
@@ -103,6 +112,7 @@ static void do_coin_change(const AppState *S) {
       printf("  %s x %d\n", S->coin_sys->coins[i].code, counts[i]);
 }
 
+/** Print sample physics values. */
 static void do_physics(const AppState *S) {
   (void)S;
   printf("beta1=%.3e beta2=%.3e gamma_phi(1)=%.3e\n", beta1(), beta2(),
@@ -117,6 +127,7 @@ static void do_physics(const AppState *S) {
   }
 }
 
+/** Generate FBM field and write PPM(s). */
 static void generate_fbm_field(AppState *S, int N, double H) {
   if (N < 3) {
     puts("size>=3");
@@ -143,6 +154,7 @@ static void generate_fbm_field(AppState *S, int N, double H) {
   }
 }
 
+/** Regenerate last fBm. */
 static void regen_fbm(AppState *S) {
   if (!S->fbm_field) {
     puts("no fbm yet");
@@ -151,6 +163,7 @@ static void regen_fbm(AppState *S) {
   generate_fbm_field(S, S->fbm_size, S->fbm_H);
 }
 
+/** Solve Poisson on field and write solution. */
 static void do_poisson(const AppState *S) {
   if (!S->fbm_field) {
     puts("no fbm yet");
@@ -183,6 +196,7 @@ static void do_poisson(const AppState *S) {
   free(phi);
 }
 
+/** Compute vector field and overlay PPM. */
 static void do_vectors(const AppState *S) {
   if (!S->fbm_field) {
     puts("no fbm yet");
@@ -206,6 +220,7 @@ static void do_vectors(const AppState *S) {
   free(dy);
 }
 
+/** Benchmark DP/opt solver. */
 static void do_bench(const AppState *S) {
   char in[64];
   printf("amount: ");
@@ -244,6 +259,7 @@ static void do_bench(const AppState *S) {
   free(tmp);
 }
 
+/** Entry point for stand-alone UI. */
 int main(void) {
   setlocale(LC_ALL, "");
   color_init();
@@ -262,7 +278,7 @@ int main(void) {
   show_state(&S);
   char line[128];
   while (1) {
-  printf("%scmd>%s ", C_BOLD, C_RESET);
+    printf("%scmd>%s ", C_BOLD, C_RESET);
     if (!fgets(line, sizeof(line), stdin))
       break;
     char *p = line;
@@ -326,14 +342,50 @@ int main(void) {
     case 'b':
       do_bench(&S);
       break;
-    case 'm': {
-      MLP mlp; if(mlp_init(&mlp,2,8,2,123)!=0){ puts("mlp init fail"); break; }
-      double xs[20]; double ys[20]; int n=10; /* pairs of (x,y) same as target */
-      for(int i=0;i<n;i++){ double a=(i/(double)(n-1))*2-1; double b=1-a; xs[2*i]=a; xs[2*i+1]=b; ys[2*i]=a; ys[2*i+1]=b; }
-      for(int e=0;e<200;e++) mlp_train_epoch(&mlp,xs,ys,n,0.01);
-      double test[2]={0.3,-0.3}; double out[2]; mlp_forward(&mlp,test,out); printf("MLP test in(0.3,-0.3)->(%.3f,%.3f)\n",out[0],out[1]);
+    case 'm':
+    case 'M': {
+      int debug = (cmd == 'M');
+      MLP mlp;
+      if (mlp_init(&mlp, 2, 8, 2, 123) != 0) {
+        puts("mlp init fail");
+        break;
+      }
+      int n = 20;
+      double xs[40];
+      double ys[40];
+      for (int i = 0; i < n; i++) {
+        double a = (i / (double)(n - 1)) * 2 - 1;
+        double b = 1 - a;
+        xs[2 * i] = a;
+        xs[2 * i + 1] = b;
+        ys[2 * i] = a;
+        ys[2 * i + 1] = b;
+      }
+      for (int e = 0; e < 300; e++) {
+        mlp_train_epoch(&mlp, xs, ys, n, 0.01);
+        if (debug && (e % 50 == 0)) {
+          double loss = 0;
+          double o[2];
+          for (int i = 0; i < n; i++) {
+            mlp_forward(&mlp, &xs[2 * i], o);
+            double dx = o[0] - ys[2 * i];
+            double dy = o[1] - ys[2 * i + 1];
+            loss += dx * dx + dy * dy;
+          }
+          loss /= n;
+          printf("epoch %d loss %.4g\n", e, loss);
+        }
+      }
+      double test[2] = {0.3, -0.3};
+      double out[2];
+      mlp_forward(&mlp, test, out);
+      printf("MLP test in(0.3,-0.3)->(%.3f,%.3f)\n", out[0], out[1]);
       mlp_free(&mlp);
     } break;
+    case 'C':
+      color_enabled = !color_enabled;
+      puts(color_enabled ? "color on" : "color off");
+      break;
     default:
       puts("unknown (h for help)");
       break;

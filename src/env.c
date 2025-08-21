@@ -1,3 +1,6 @@
+/** \file env.c
+ *  \brief Static environment parameter lookup table and helpers.
+ */
 #include "env.h"
 #include <stdio.h>
 #include <string.h>
@@ -9,6 +12,7 @@ static const Environment ENVS[] = {
     {"orbit", 0.0, 295.0, 0.0}, /* microgravity (idealized) */
 };
 
+/** Lookup environment by name (case-sensitive). */
 const Environment *get_environment(const char *name) {
   if (!name)
     return &ENVS[0];
@@ -19,6 +23,7 @@ const Environment *get_environment(const char *name) {
   return NULL;
 }
 
+/** Print supported environments to stdout. */
 void list_environments(void) {
   printf("Environments:\n");
   for (size_t i = 0; i < sizeof(ENVS) / sizeof(ENVS[0]); ++i) {

@@ -7,14 +7,14 @@
 
 # =============================================================================
 # Project: CoinSorter
-# Configurations: 
+# Configurations: Release
 # =============================================================================
 # =============================================================================
 
 #############################################
 # Rule for compiling C files.
 
-rule C_COMPILER__coins_core_unscanned_
+rule C_COMPILER__coins_core_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}/usr/bin/clang $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -24,7 +24,7 @@ rule C_COMPILER__coins_core_unscanned_
 #############################################
 # Rule for linking C static library.
 
-rule C_STATIC_LIBRARY_LINKER__coins_core_
+rule C_STATIC_LIBRARY_LINKER__coins_core_Release
   command = $PRE_LINK && /opt/homebrew/bin/cmake -E rm -f $TARGET_FILE && /usr/bin/ar qc $TARGET_FILE $LINK_FLAGS $in && /usr/bin/ranlib $TARGET_FILE && /opt/homebrew/bin/cmake -E touch $TARGET_FILE && $POST_BUILD
   description = Linking C static library $TARGET_FILE
   restat = $RESTAT
@@ -33,7 +33,7 @@ rule C_STATIC_LIBRARY_LINKER__coins_core_
 #############################################
 # Rule for compiling C files.
 
-rule C_COMPILER__coinsorter_unscanned_
+rule C_COMPILER__coinsorter_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}/usr/bin/clang $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -43,7 +43,7 @@ rule C_COMPILER__coinsorter_unscanned_
 #############################################
 # Rule for linking C executable.
 
-rule C_EXECUTABLE_LINKER__coinsorter_
+rule C_EXECUTABLE_LINKER__coinsorter_Release
   command = $PRE_LINK && /usr/bin/clang $FLAGS $LINK_FLAGS $in -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD
   description = Linking C executable $TARGET_FILE
   restat = $RESTAT
@@ -52,7 +52,7 @@ rule C_EXECUTABLE_LINKER__coinsorter_
 #############################################
 # Rule for compiling C files.
 
-rule C_COMPILER__superforce_unscanned_
+rule C_COMPILER__superforce_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}/usr/bin/clang $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -62,7 +62,7 @@ rule C_COMPILER__superforce_unscanned_
 #############################################
 # Rule for linking C executable.
 
-rule C_EXECUTABLE_LINKER__superforce_
+rule C_EXECUTABLE_LINKER__superforce_Release
   command = $PRE_LINK && /usr/bin/clang $FLAGS $LINK_FLAGS $in -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD
   description = Linking C executable $TARGET_FILE
   restat = $RESTAT
@@ -71,7 +71,7 @@ rule C_EXECUTABLE_LINKER__superforce_
 #############################################
 # Rule for compiling C files.
 
-rule C_COMPILER__superforce_ui_unscanned_
+rule C_COMPILER__superforce_ui_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}/usr/bin/clang $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -81,7 +81,7 @@ rule C_COMPILER__superforce_ui_unscanned_
 #############################################
 # Rule for linking C executable.
 
-rule C_EXECUTABLE_LINKER__superforce_ui_
+rule C_EXECUTABLE_LINKER__superforce_ui_Release
   command = $PRE_LINK && /usr/bin/clang $FLAGS $LINK_FLAGS $in -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD
   description = Linking C executable $TARGET_FILE
   restat = $RESTAT
@@ -90,7 +90,7 @@ rule C_EXECUTABLE_LINKER__superforce_ui_
 #############################################
 # Rule for compiling C files.
 
-rule C_COMPILER__test_basic_unscanned_
+rule C_COMPILER__superforce_ncui_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}/usr/bin/clang $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -100,7 +100,83 @@ rule C_COMPILER__test_basic_unscanned_
 #############################################
 # Rule for linking C executable.
 
-rule C_EXECUTABLE_LINKER__test_basic_
+rule C_EXECUTABLE_LINKER__superforce_ncui_Release
+  command = $PRE_LINK && /usr/bin/clang $FLAGS $LINK_FLAGS $in -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD
+  description = Linking C executable $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for compiling C files.
+
+rule C_COMPILER__test_basic_unscanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}/usr/bin/clang $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building C object $out
+
+
+#############################################
+# Rule for linking C executable.
+
+rule C_EXECUTABLE_LINKER__test_basic_Release
+  command = $PRE_LINK && /usr/bin/clang $FLAGS $LINK_FLAGS $in -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD
+  description = Linking C executable $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for compiling C files.
+
+rule C_COMPILER__test_sim_unscanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}/usr/bin/clang $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building C object $out
+
+
+#############################################
+# Rule for linking C executable.
+
+rule C_EXECUTABLE_LINKER__test_sim_Release
+  command = $PRE_LINK && /usr/bin/clang $FLAGS $LINK_FLAGS $in -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD
+  description = Linking C executable $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for compiling C files.
+
+rule C_COMPILER__test_coin_adv_unscanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}/usr/bin/clang $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building C object $out
+
+
+#############################################
+# Rule for linking C executable.
+
+rule C_EXECUTABLE_LINKER__test_coin_adv_Release
+  command = $PRE_LINK && /usr/bin/clang $FLAGS $LINK_FLAGS $in -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD
+  description = Linking C executable $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for compiling C files.
+
+rule C_COMPILER__test_area_unscanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}/usr/bin/clang $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building C object $out
+
+
+#############################################
+# Rule for linking C executable.
+
+rule C_EXECUTABLE_LINKER__test_area_Release
   command = $PRE_LINK && /usr/bin/clang $FLAGS $LINK_FLAGS $in -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD
   description = Linking C executable $TARGET_FILE
   restat = $RESTAT

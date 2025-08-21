@@ -1,3 +1,6 @@
+/** \file casimir.c
+ *  \brief Simplified Casimir effect model functions.
+ */
 #include "casimir.h"
 #include <math.h>
 #ifndef M_PI

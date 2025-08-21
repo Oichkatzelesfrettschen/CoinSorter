@@ -14,6 +14,9 @@
 # EXTERNAL cache entries
 ########################
 
+//Build ncurses-based advanced UI
+BUILD_NCURSES_UI:BOOL=ON
+
 //Build superforce unified binary
 BUILD_SUPERFORCE:BOOL=ON
 
@@ -34,7 +37,7 @@ CMAKE_AR:FILEPATH=/usr/bin/ar
 
 //Choose the type of build, options are: None Debug Release RelWithDebInfo
 // MinSizeRel ...
-CMAKE_BUILD_TYPE:STRING=
+CMAKE_BUILD_TYPE:STRING=Release
 
 //C compiler
 CMAKE_C_COMPILER:FILEPATH=/usr/bin/clang
@@ -81,11 +84,59 @@ CMAKE_EXPORT_COMPILE_COMMANDS:BOOL=
 //Value Computed by CMake.
 CMAKE_FIND_PACKAGE_REDIRECTS_DIR:STATIC=/Users/eirikr/Documents/GitHub/CoinSorter/build/CMakeFiles/pkgRedirects
 
+//User executables (bin)
+CMAKE_INSTALL_BINDIR:PATH=bin
+
+//Read-only architecture-independent data (DATAROOTDIR)
+CMAKE_INSTALL_DATADIR:PATH=
+
+//Read-only architecture-independent data root (share)
+CMAKE_INSTALL_DATAROOTDIR:PATH=share
+
+//Documentation root (DATAROOTDIR/doc/PROJECT_NAME)
+CMAKE_INSTALL_DOCDIR:PATH=
+
+//C header files (include)
+CMAKE_INSTALL_INCLUDEDIR:PATH=include
+
+//Info documentation (DATAROOTDIR/info)
+CMAKE_INSTALL_INFODIR:PATH=
+
+//Object code libraries (lib)
+CMAKE_INSTALL_LIBDIR:PATH=lib
+
+//Program executables (libexec)
+CMAKE_INSTALL_LIBEXECDIR:PATH=libexec
+
+//Locale-dependent data (DATAROOTDIR/locale)
+CMAKE_INSTALL_LOCALEDIR:PATH=
+
+//Modifiable single-machine data (var)
+CMAKE_INSTALL_LOCALSTATEDIR:PATH=var
+
+//Man documentation (DATAROOTDIR/man)
+CMAKE_INSTALL_MANDIR:PATH=
+
 //Path to a program.
 CMAKE_INSTALL_NAME_TOOL:FILEPATH=/usr/bin/install_name_tool
 
+//C header files for non-gcc (/usr/include)
+CMAKE_INSTALL_OLDINCLUDEDIR:PATH=/usr/include
+
 //Install path prefix, prepended onto install directories.
 CMAKE_INSTALL_PREFIX:PATH=/usr/local
+
+//Run-time variable data (LOCALSTATEDIR/run)
+CMAKE_INSTALL_RUNSTATEDIR:PATH=
+
+//System admin executables (sbin)
+CMAKE_INSTALL_SBINDIR:PATH=sbin
+
+//Modifiable architecture-independent data (com)
+CMAKE_INSTALL_SHAREDSTATEDIR:PATH=com
+
+//Read-only single-machine data (etc)
+CMAKE_INSTALL_SYSCONFDIR:PATH=etc
 
 //Path to a program.
 CMAKE_LINKER:FILEPATH=/usr/bin/ld
@@ -239,7 +290,19 @@ CTEST_SUBMIT_RETRY_COUNT:STRING=3
 CTEST_SUBMIT_RETRY_DELAY:STRING=5
 
 //Path to a library.
+CURSES_CURSES_LIBRARY:FILEPATH=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib/libcurses.tbd
+
+//Path to a library.
+CURSES_FORM_LIBRARY:FILEPATH=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib/libform.tbd
+
+//Path to a file.
+CURSES_INCLUDE_PATH:PATH=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include
+
+//Path to a library.
 CURSES_LIB:FILEPATH=/opt/local/lib/libncursesw.dylib
+
+//Path to a library.
+CURSES_NCURSES_LIBRARY:FILEPATH=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib/libncurses.tbd
 
 //Value Computed by CMake
 CoinSorter_BINARY_DIR:STATIC=/Users/eirikr/Documents/GitHub/CoinSorter/build
@@ -256,6 +319,9 @@ DART_TESTING_TIMEOUT:STRING=1500
 //Generate API documentation with Doxygen
 ENABLE_DOXYGEN:BOOL=OFF
 
+//Path to a program.
+GITCOMMAND:FILEPATH=/opt/local/bin/git
+
 //Command to build the project
 MAKECOMMAND:STRING=/opt/homebrew/bin/cmake --build . --config "${CTEST_CONFIGURATION_TYPE}"
 
@@ -265,8 +331,17 @@ MEMORYCHECK_COMMAND:FILEPATH=MEMORYCHECK_COMMAND-NOTFOUND
 //File that contains suppressions for the memory checker
 MEMORYCHECK_SUPPRESSIONS_FILE:FILEPATH=
 
+//Arguments to supply to pkg-config
+PKG_CONFIG_ARGN:STRING=
+
+//pkg-config executable
+PKG_CONFIG_EXECUTABLE:FILEPATH=/opt/local/bin/pkg-config
+
 //Name of the computer/site where compile is being run
 SITE:STRING=MacBookAir.localdomain
+
+//Path to a library.
+pkgcfg_lib_NCURSES_ncurses:FILEPATH=/opt/local/lib/libncurses.dylib
 
 
 ########################
@@ -338,8 +413,40 @@ CMAKE_GENERATOR_TOOLSET:INTERNAL=
 //Source directory with the top level CMakeLists.txt file for this
 // project
 CMAKE_HOME_DIRECTORY:INTERNAL=/Users/eirikr/Documents/GitHub/CoinSorter
+//ADVANCED property for variable: CMAKE_INSTALL_BINDIR
+CMAKE_INSTALL_BINDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_DATADIR
+CMAKE_INSTALL_DATADIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_DATAROOTDIR
+CMAKE_INSTALL_DATAROOTDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_DOCDIR
+CMAKE_INSTALL_DOCDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_INCLUDEDIR
+CMAKE_INSTALL_INCLUDEDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_INFODIR
+CMAKE_INSTALL_INFODIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_LIBDIR
+CMAKE_INSTALL_LIBDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_LIBEXECDIR
+CMAKE_INSTALL_LIBEXECDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_LOCALEDIR
+CMAKE_INSTALL_LOCALEDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_LOCALSTATEDIR
+CMAKE_INSTALL_LOCALSTATEDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_MANDIR
+CMAKE_INSTALL_MANDIR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_INSTALL_NAME_TOOL
 CMAKE_INSTALL_NAME_TOOL-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_OLDINCLUDEDIR
+CMAKE_INSTALL_OLDINCLUDEDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_RUNSTATEDIR
+CMAKE_INSTALL_RUNSTATEDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_SBINDIR
+CMAKE_INSTALL_SBINDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_SHAREDSTATEDIR
+CMAKE_INSTALL_SHAREDSTATEDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_SYSCONFDIR
+CMAKE_INSTALL_SYSCONFDIR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_LINKER
 CMAKE_LINKER-ADVANCED:INTERNAL=1
 //Name of CMakeLists files to read
@@ -412,14 +519,72 @@ COVERAGE_EXTRA_FLAGS-ADVANCED:INTERNAL=1
 CTEST_SUBMIT_RETRY_COUNT-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CTEST_SUBMIT_RETRY_DELAY
 CTEST_SUBMIT_RETRY_DELAY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CURSES_CURSES_LIBRARY
+CURSES_CURSES_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CURSES_FORM_LIBRARY
+CURSES_FORM_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CURSES_INCLUDE_PATH
+CURSES_INCLUDE_PATH-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CURSES_NCURSES_LIBRARY
+CURSES_NCURSES_LIBRARY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: DART_TESTING_TIMEOUT
 DART_TESTING_TIMEOUT-ADVANCED:INTERNAL=1
+//Details about finding Curses
+FIND_PACKAGE_MESSAGE_DETAILS_Curses:INTERNAL=[/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib/libcurses.tbd][/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include][v()]
+//ADVANCED property for variable: GITCOMMAND
+GITCOMMAND-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: MAKECOMMAND
 MAKECOMMAND-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: MEMORYCHECK_COMMAND
 MEMORYCHECK_COMMAND-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: MEMORYCHECK_SUPPRESSIONS_FILE
 MEMORYCHECK_SUPPRESSIONS_FILE-ADVANCED:INTERNAL=1
+NCURSES_CFLAGS:INTERNAL=-D_DARWIN_C_SOURCE;-DNCURSES_WIDECHAR;-I/opt/local/include
+NCURSES_CFLAGS_I:INTERNAL=
+NCURSES_CFLAGS_OTHER:INTERNAL=-D_DARWIN_C_SOURCE;-DNCURSES_WIDECHAR
+NCURSES_FOUND:INTERNAL=1
+NCURSES_INCLUDEDIR:INTERNAL=/opt/local/include
+NCURSES_INCLUDE_DIRS:INTERNAL=/opt/local/include
+NCURSES_LDFLAGS:INTERNAL=-L/opt/local/lib;-Wl,-search_paths_first;-lncurses
+NCURSES_LDFLAGS_OTHER:INTERNAL=-Wl,-search_paths_first
+NCURSES_LIBDIR:INTERNAL=/opt/local/lib
+NCURSES_LIBRARIES:INTERNAL=ncurses
+NCURSES_LIBRARY_DIRS:INTERNAL=/opt/local/lib
+NCURSES_LIBS:INTERNAL=
+NCURSES_LIBS_L:INTERNAL=
+NCURSES_LIBS_OTHER:INTERNAL=
+NCURSES_LIBS_PATHS:INTERNAL=
+NCURSES_MODULE_NAME:INTERNAL=ncurses
+NCURSES_PREFIX:INTERNAL=/opt/local
+NCURSES_STATIC_CFLAGS:INTERNAL=-D_DARWIN_C_SOURCE;-DNCURSES_WIDECHAR;-I/opt/local/include
+NCURSES_STATIC_CFLAGS_I:INTERNAL=
+NCURSES_STATIC_CFLAGS_OTHER:INTERNAL=-D_DARWIN_C_SOURCE;-DNCURSES_WIDECHAR
+NCURSES_STATIC_INCLUDE_DIRS:INTERNAL=/opt/local/include
+NCURSES_STATIC_LDFLAGS:INTERNAL=-L/opt/local/lib;-Wl,-search_paths_first;-lncurses
+NCURSES_STATIC_LDFLAGS_OTHER:INTERNAL=-Wl,-search_paths_first
+NCURSES_STATIC_LIBDIR:INTERNAL=
+NCURSES_STATIC_LIBRARIES:INTERNAL=ncurses
+NCURSES_STATIC_LIBRARY_DIRS:INTERNAL=/opt/local/lib
+NCURSES_STATIC_LIBS:INTERNAL=
+NCURSES_STATIC_LIBS_L:INTERNAL=
+NCURSES_STATIC_LIBS_OTHER:INTERNAL=
+NCURSES_STATIC_LIBS_PATHS:INTERNAL=
+NCURSES_VERSION:INTERNAL=6.5.20240427
+NCURSES_ncurses_INCLUDEDIR:INTERNAL=
+NCURSES_ncurses_LIBDIR:INTERNAL=
+NCURSES_ncurses_PREFIX:INTERNAL=
+NCURSES_ncurses_VERSION:INTERNAL=
+//ADVANCED property for variable: PKG_CONFIG_ARGN
+PKG_CONFIG_ARGN-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: PKG_CONFIG_EXECUTABLE
+PKG_CONFIG_EXECUTABLE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: SITE
 SITE-ADVANCED:INTERNAL=1
+//CMAKE_INSTALL_PREFIX during last run
+_GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=/usr/local
+__pkg_config_arguments_NCURSES:INTERNAL=QUIET;ncurses
+__pkg_config_checked_NCURSES:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_NCURSES_ncurses
+pkgcfg_lib_NCURSES_ncurses-ADVANCED:INTERNAL=1
+prefix_result:INTERNAL=/opt/local/lib
 

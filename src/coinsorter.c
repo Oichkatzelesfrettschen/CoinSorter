@@ -1,4 +1,8 @@
+/** \file coinsorter.c
+ *  \brief Command-line interface for coin change algorithms and audits.
+ */
 #include "coins.h"
+#include "color.h"
 #include "version.h"
 #include <ctype.h>
 #include <limits.h>
@@ -13,6 +17,7 @@
 /* Algorithms implemented in coin_algorithms.c */
 
 /* ---------------- Utility ---------------- */
+/** Parse non-negative int, return -1 on error. */
 static int parse_int(const char *s) {
   char *e;
   long v = strtol(s, &e, 10);
@@ -21,14 +26,16 @@ static int parse_int(const char *s) {
   return (int)v;
 }
 
+/** Print usage summary. */
 static void print_usage(const char *prog) {
   printf("Usage: %s [amount] [system] [--json] [--audit] [--selftest] "
-         "[--version] [--opt=count|mass|diam]\n",
+         "[--version] [--opt=count|mass|diam|area]\n",
          prog);
   list_systems();
 }
 
 /* Self tests: verify greedy vs DP for predefined systems and sample amounts */
+/** Internal self test (greedy vs DP and canonical audit). */
 static int selftest(void) {
   const CoinSystem *usd = get_coin_system("usd");
   const int AMTS[] = {0, 1, 6, 11, 37, 99, 137, 499};
@@ -53,6 +60,7 @@ static int selftest(void) {
   return 1;
 }
 
+/** Program entry point handling argument parsing and dispatch. */
 int main(int argc, char **argv) {
   const CoinSystem *sys = get_coin_system("usd");
   int amount = -1;
@@ -64,6 +72,7 @@ int main(int argc, char **argv) {
   int bench_amt = 0;
   int bench_iters = 0;
 
+  int force_no_color = 0;
   for (int i = 1; i < argc; ++i) {
     if (strcmp(argv[i], "--json") == 0)
       json = 1;
@@ -90,10 +99,14 @@ int main(int argc, char **argv) {
         opt_mode = OPT_MASS;
       else if (strcmp(m, "diam") == 0)
         opt_mode = OPT_DIAMETER;
+      else if (strcmp(m, "area") == 0)
+        opt_mode = OPT_AREA;
       else {
         fprintf(stderr, "Unknown opt mode %s\n", m);
         return 1;
       }
+    } else if (strcmp(argv[i], "--no-color") == 0) {
+      force_no_color = 1;
     } else if (isdigit((unsigned char)argv[i][0])) {
       amount = parse_int(argv[i]);
       if (show_version) {
@@ -135,6 +148,9 @@ int main(int argc, char **argv) {
     }
   }
 
+  color_init();
+  if (force_no_color)
+    color_enabled = 0;
   int *counts = (int *)calloc(sys->ncoins, sizeof(int));
   if (!counts) {
     perror("alloc");
@@ -167,22 +183,35 @@ int main(int argc, char **argv) {
 
   if (json) {
     char buf[768];
-    if (format_change_json(sys, amount, counts, do_greedy ? "greedy" : "dp",
+    const char *strategy = NULL;
+    if (opt_mode == OPT_MASS)
+      strategy = "dp-mass";
+    else if (opt_mode == OPT_DIAMETER)
+      strategy = "dp-diam";
+    else if (opt_mode == OPT_AREA)
+      strategy = "dp-area";
+    else
+      strategy = (do_greedy ? "greedy" : "dp");
+    if (format_change_json(sys, amount, counts, strategy,
                            COINSORTER_VERSION_STR, buf, sizeof(buf)) == 0)
       puts(buf);
     else
       fprintf(stderr, "JSON overflow.\n");
   } else {
-    printf("System: %s  Amount: %d\n", sys->system_name, amount);
+    printf("%sSystem:%s %s  Amount: %d\n", C_BOLD, C_RESET, sys->system_name,
+           amount);
     int total_coins = 0;
     for (size_t i = 0; i < sys->ncoins; ++i)
       total_coins += counts[i];
     const char *mode_str =
         (opt_mode == OPT_MASS
              ? "dp-mass"
-             : (opt_mode == OPT_DIAMETER ? "dp-diam"
-                                         : (do_greedy ? "greedy" : "dp")));
-    printf("Strategy: %s\n", mode_str);
+             : (opt_mode == OPT_DIAMETER
+                    ? "dp-diam"
+                    : (opt_mode == OPT_AREA ? "dp-area"
+                                            : (do_greedy ? "greedy" : "dp"))));
+    printf("Strategy: %s%s%s\n", (opt_mode == OPT_COUNT ? C_GREEN : C_MAGENTA),
+           mode_str, C_RESET);
     for (size_t i = 0; i < sys->ncoins; ++i) {
       if (counts[i])
         printf("  %s (%d): %d\n", sys->coins[i].name, sys->coins[i].value,
@@ -191,9 +220,12 @@ int main(int argc, char **argv) {
     printf("Total coins: %d\n", total_coins);
     double mass = total_mass(sys, counts);
     if (mass > 0)
-      printf("Total mass: %.3f g\n", mass);
-    if (!do_greedy) {
-      printf("(Greedy suboptimal first at amount %d)\n", ex);
+      printf("Total mass: %s%.3f g%s\n", C_BLUE, mass, C_RESET);
+    if (opt_mode == OPT_COUNT && !do_greedy) {
+      if (ex >= 0)
+        printf("(Greedy suboptimal first at amount %d)\n", ex);
+      else
+        printf("(Greedy optimal on sampled range)\n");
     }
   }
 
@@ -222,11 +254,14 @@ int main(int argc, char **argv) {
       if (dt < best)
         best = dt;
     }
+    const char *bench_mode =
+        (opt_mode == OPT_COUNT
+             ? "count"
+             : (opt_mode == OPT_MASS
+                    ? "mass"
+                    : (opt_mode == OPT_DIAMETER ? "diam" : "area")));
     printf("BENCH amount=%d mode=%s iters=%d avg=%.6g s best=%.6g s\n",
-           bench_amt,
-           (opt_mode == OPT_COUNT ? "count"
-                                  : (opt_mode == OPT_MASS ? "mass" : "diam")),
-           bench_iters, tot / bench_iters, best);
+           bench_amt, bench_mode, bench_iters, tot / bench_iters, best);
     free(tmp);
     return 0;
   }

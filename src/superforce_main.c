@@ -51,6 +51,7 @@ int main(int argc, char **argv) {
   OptimizeMode opt_mode = OPT_COUNT;
   int no_thermal = 0;
   const char *env_name = "earth";
+  int force_no_color = 0;
   for (int i = 1; i < argc; ++i) {
     if (!strcmp(argv[i], "--physics"))
       do_phys = 1;
@@ -72,6 +73,8 @@ int main(int argc, char **argv) {
       show_version = 1;
     else if (!strcmp(argv[i], "--no-thermal"))
       no_thermal = 1;
+    else if (!strcmp(argv[i], "--no-color"))
+      force_no_color = 1;
     else if (!strncmp(argv[i], "opt=", 4)) {
       const char *m = argv[i] + 4;
       if (!strcmp(m, "count"))
@@ -80,6 +83,8 @@ int main(int argc, char **argv) {
         opt_mode = OPT_MASS;
       else if (!strcmp(m, "diam"))
         opt_mode = OPT_DIAMETER;
+      else if (!strcmp(m, "area"))
+        opt_mode = OPT_AREA;
     }
     if (show_version) {
       printf("superforce version %s\n", COINSORTER_VERSION_STR);
@@ -105,6 +110,8 @@ int main(int argc, char **argv) {
     if (no_thermal)
       printf("%s[casimir]%s thermal contribution disabled\n", C_YELLOW,
              C_RESET);
+    if (force_no_color)
+      color_enabled = 0;
   }
   if (do_sim) {
     /* If square fBm request */
@@ -175,16 +182,17 @@ int main(int argc, char **argv) {
     const char *strategy =
         (opt_mode == OPT_MASS
              ? "dp-mass"
-             : (opt_mode == OPT_DIAMETER ? "dp-diam"
-                                         : (use_greedy ? "greedy" : "dp")));
+             : (opt_mode == OPT_DIAMETER
+                    ? "dp-diam"
+                    : (opt_mode == OPT_AREA ? "dp-area"
+                                            : (use_greedy ? "greedy" : "dp"))));
     if (format_change_json(cs, amount, counts, strategy, COINSORTER_VERSION_STR,
                            buf, sizeof(buf)) == 0)
       puts(buf);
   } else {
-  printf("%sSystem=%s%s amount=%d strategy=%s%s%s\n", C_BOLD,
-       cs->system_name, C_RESET, amount,
-       use_greedy ? C_GREEN : C_MAGENTA,
-       use_greedy ? "greedy" : "dp", C_RESET);
+    printf("%sSystem=%s%s amount=%d strategy=%s%s%s\n", C_BOLD, cs->system_name,
+           C_RESET, amount, use_greedy ? C_GREEN : C_MAGENTA,
+           use_greedy ? "greedy" : "dp", C_RESET);
     double mass = total_mass(cs, counts);
     for (size_t i = 0; i < cs->ncoins; ++i)
       if (counts[i])

@@ -2,7 +2,11 @@
 /Users/eirikr/Documents/GitHub/CoinSorter/build/CMakeFiles/coinsorter.dir
 /Users/eirikr/Documents/GitHub/CoinSorter/build/CMakeFiles/superforce.dir
 /Users/eirikr/Documents/GitHub/CoinSorter/build/CMakeFiles/superforce_ui.dir
+/Users/eirikr/Documents/GitHub/CoinSorter/build/CMakeFiles/superforce_ncui.dir
 /Users/eirikr/Documents/GitHub/CoinSorter/build/CMakeFiles/test_basic.dir
+/Users/eirikr/Documents/GitHub/CoinSorter/build/CMakeFiles/test_sim.dir
+/Users/eirikr/Documents/GitHub/CoinSorter/build/CMakeFiles/test_coin_adv.dir
+/Users/eirikr/Documents/GitHub/CoinSorter/build/CMakeFiles/test_area.dir
 /Users/eirikr/Documents/GitHub/CoinSorter/build/CMakeFiles/Experimental.dir
 /Users/eirikr/Documents/GitHub/CoinSorter/build/CMakeFiles/Nightly.dir
 /Users/eirikr/Documents/GitHub/CoinSorter/build/CMakeFiles/Continuous.dir
@@ -34,3 +38,7 @@
 /Users/eirikr/Documents/GitHub/CoinSorter/build/CMakeFiles/test.dir
 /Users/eirikr/Documents/GitHub/CoinSorter/build/CMakeFiles/edit_cache.dir
 /Users/eirikr/Documents/GitHub/CoinSorter/build/CMakeFiles/rebuild_cache.dir
+/Users/eirikr/Documents/GitHub/CoinSorter/build/CMakeFiles/list_install_components.dir
+/Users/eirikr/Documents/GitHub/CoinSorter/build/CMakeFiles/install.dir
+/Users/eirikr/Documents/GitHub/CoinSorter/build/CMakeFiles/install/local.dir
+/Users/eirikr/Documents/GitHub/CoinSorter/build/CMakeFiles/install/strip.dir
