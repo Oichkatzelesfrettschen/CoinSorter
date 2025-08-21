@@ -1,6 +1,6 @@
-basic 5 0.000175284
-sim 5 0.00046841
-coin_adv 5 1.16219
-area 5 0.000204669
-observables 2 0.000437438
+basic 1 0.000917066
+sim 1 0.00230842
+coin_adv 1 5.80559
+area 1 0.0010309
+observables 1 0.000905695
 ---
