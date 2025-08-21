@@ -12,3 +12,5 @@ add_test(coin_adv "/home/runner/work/CoinSorter/CoinSorter/build/bin/test_coin_a
 set_tests_properties(coin_adv PROPERTIES  _BACKTRACE_TRIPLES "/home/runner/work/CoinSorter/CoinSorter/CMakeLists.txt;87;add_test;/home/runner/work/CoinSorter/CoinSorter/CMakeLists.txt;0;")
 add_test(area "/home/runner/work/CoinSorter/CoinSorter/build/bin/test_area")
 set_tests_properties(area PROPERTIES  _BACKTRACE_TRIPLES "/home/runner/work/CoinSorter/CoinSorter/CMakeLists.txt;91;add_test;/home/runner/work/CoinSorter/CoinSorter/CMakeLists.txt;0;")
+add_test(observables "/home/runner/work/CoinSorter/CoinSorter/build/bin/test_observables")
+set_tests_properties(observables PROPERTIES  _BACKTRACE_TRIPLES "/home/runner/work/CoinSorter/CoinSorter/CMakeLists.txt;95;add_test;/home/runner/work/CoinSorter/CoinSorter/CMakeLists.txt;0;")

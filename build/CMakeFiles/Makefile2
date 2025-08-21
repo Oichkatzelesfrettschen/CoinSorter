@@ -71,6 +71,7 @@ all: CMakeFiles/test_basic.dir/all
 all: CMakeFiles/test_sim.dir/all
 all: CMakeFiles/test_coin_adv.dir/all
 all: CMakeFiles/test_area.dir/all
+all: CMakeFiles/test_observables.dir/all
 .PHONY : all
 
 # The main recursive "codegen" target.
@@ -82,6 +83,7 @@ codegen: CMakeFiles/test_basic.dir/codegen
 codegen: CMakeFiles/test_sim.dir/codegen
 codegen: CMakeFiles/test_coin_adv.dir/codegen
 codegen: CMakeFiles/test_area.dir/codegen
+codegen: CMakeFiles/test_observables.dir/codegen
 .PHONY : codegen
 
 # The main recursive "preinstall" target.
@@ -97,6 +99,7 @@ clean: CMakeFiles/test_basic.dir/clean
 clean: CMakeFiles/test_sim.dir/clean
 clean: CMakeFiles/test_coin_adv.dir/clean
 clean: CMakeFiles/test_area.dir/clean
+clean: CMakeFiles/test_observables.dir/clean
 clean: CMakeFiles/Experimental.dir/clean
 clean: CMakeFiles/Nightly.dir/clean
 clean: CMakeFiles/Continuous.dir/clean
@@ -294,7 +297,7 @@ CMakeFiles/test_basic.dir/clean:
 CMakeFiles/test_sim.dir/all: CMakeFiles/coins_core.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_sim.dir/build.make CMakeFiles/test_sim.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_sim.dir/build.make CMakeFiles/test_sim.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/runner/work/CoinSorter/CoinSorter/build/CMakeFiles --progress-num=22,23 "Built target test_sim"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/runner/work/CoinSorter/CoinSorter/build/CMakeFiles --progress-num=24,25 "Built target test_sim"
 .PHONY : CMakeFiles/test_sim.dir/all
 
 # Build rule for subdir invocation for target.
@@ -311,7 +314,7 @@ test_sim: CMakeFiles/test_sim.dir/rule
 # codegen rule for target.
 CMakeFiles/test_sim.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_sim.dir/build.make CMakeFiles/test_sim.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/runner/work/CoinSorter/CoinSorter/build/CMakeFiles --progress-num=22,23 "Finished codegen for target test_sim"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/runner/work/CoinSorter/CoinSorter/build/CMakeFiles --progress-num=24,25 "Finished codegen for target test_sim"
 .PHONY : CMakeFiles/test_sim.dir/codegen
 
 # clean rule for target.
@@ -382,6 +385,38 @@ CMakeFiles/test_area.dir/codegen:
 CMakeFiles/test_area.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_area.dir/build.make CMakeFiles/test_area.dir/clean
 .PHONY : CMakeFiles/test_area.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/test_observables.dir
+
+# All Build rule for target.
+CMakeFiles/test_observables.dir/all: CMakeFiles/coins_core.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_observables.dir/build.make CMakeFiles/test_observables.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_observables.dir/build.make CMakeFiles/test_observables.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/runner/work/CoinSorter/CoinSorter/build/CMakeFiles --progress-num=22,23 "Built target test_observables"
+.PHONY : CMakeFiles/test_observables.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/test_observables.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/runner/work/CoinSorter/CoinSorter/build/CMakeFiles 11
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/test_observables.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/runner/work/CoinSorter/CoinSorter/build/CMakeFiles 0
+.PHONY : CMakeFiles/test_observables.dir/rule
+
+# Convenience name for target.
+test_observables: CMakeFiles/test_observables.dir/rule
+.PHONY : test_observables
+
+# codegen rule for target.
+CMakeFiles/test_observables.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_observables.dir/build.make CMakeFiles/test_observables.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/runner/work/CoinSorter/CoinSorter/build/CMakeFiles --progress-num=22,23 "Finished codegen for target test_observables"
+.PHONY : CMakeFiles/test_observables.dir/codegen
+
+# clean rule for target.
+CMakeFiles/test_observables.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_observables.dir/build.make CMakeFiles/test_observables.dir/clean
+.PHONY : CMakeFiles/test_observables.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/Experimental.dir

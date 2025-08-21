@@ -6,6 +6,7 @@
 /home/runner/work/CoinSorter/CoinSorter/build/CMakeFiles/test_sim.dir
 /home/runner/work/CoinSorter/CoinSorter/build/CMakeFiles/test_coin_adv.dir
 /home/runner/work/CoinSorter/CoinSorter/build/CMakeFiles/test_area.dir
+/home/runner/work/CoinSorter/CoinSorter/build/CMakeFiles/test_observables.dir
 /home/runner/work/CoinSorter/CoinSorter/build/CMakeFiles/Experimental.dir
 /home/runner/work/CoinSorter/CoinSorter/build/CMakeFiles/Nightly.dir
 /home/runner/work/CoinSorter/CoinSorter/build/CMakeFiles/Continuous.dir

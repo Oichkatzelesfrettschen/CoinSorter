@@ -276,6 +276,19 @@ test_area/fast:
 .PHONY : test_area/fast
 
 #=============================================================================
+# Target rules for targets named test_observables
+
+# Build rule for target.
+test_observables: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_observables
+.PHONY : test_observables
+
+# fast build rule for target.
+test_observables/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_observables.dir/build.make CMakeFiles/test_observables.dir/build
+.PHONY : test_observables/fast
+
+#=============================================================================
 # Target rules for targets named Experimental
 
 # Build rule for target.
@@ -975,6 +988,30 @@ tests/test_coin_adv.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_coin_adv.dir/build.make CMakeFiles/test_coin_adv.dir/tests/test_coin_adv.c.s
 .PHONY : tests/test_coin_adv.c.s
 
+tests/test_observables.o: tests/test_observables.c.o
+.PHONY : tests/test_observables.o
+
+# target to build an object file
+tests/test_observables.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_observables.dir/build.make CMakeFiles/test_observables.dir/tests/test_observables.c.o
+.PHONY : tests/test_observables.c.o
+
+tests/test_observables.i: tests/test_observables.c.i
+.PHONY : tests/test_observables.i
+
+# target to preprocess a source file
+tests/test_observables.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_observables.dir/build.make CMakeFiles/test_observables.dir/tests/test_observables.c.i
+.PHONY : tests/test_observables.c.i
+
+tests/test_observables.s: tests/test_observables.c.s
+.PHONY : tests/test_observables.s
+
+# target to generate assembly for a file
+tests/test_observables.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_observables.dir/build.make CMakeFiles/test_observables.dir/tests/test_observables.c.s
+.PHONY : tests/test_observables.c.s
+
 tests/test_sim.o: tests/test_sim.c.o
 .PHONY : tests/test_sim.o
 
@@ -1047,6 +1084,7 @@ help:
 	@echo "... test_area"
 	@echo "... test_basic"
 	@echo "... test_coin_adv"
+	@echo "... test_observables"
 	@echo "... test_sim"
 	@echo "... src/beta.o"
 	@echo "... src/beta.i"
@@ -1090,6 +1128,9 @@ help:
 	@echo "... tests/test_coin_adv.o"
 	@echo "... tests/test_coin_adv.i"
 	@echo "... tests/test_coin_adv.s"
+	@echo "... tests/test_observables.o"
+	@echo "... tests/test_observables.i"
+	@echo "... tests/test_observables.s"
 	@echo "... tests/test_sim.o"
 	@echo "... tests/test_sim.i"
 	@echo "... tests/test_sim.s"
