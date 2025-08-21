@@ -1,0 +1,2 @@
+/usr/bin/ar qc lib/libcoins_core.a CMakeFiles/coins_core.dir/src/coin_algorithms.c.o CMakeFiles/coins_core.dir/src/coin_systems.c.o CMakeFiles/coins_core.dir/src/env.c.o CMakeFiles/coins_core.dir/src/beta.c.o CMakeFiles/coins_core.dir/src/casimir.c.o CMakeFiles/coins_core.dir/src/simulation.c.o CMakeFiles/coins_core.dir/src/color.c.o CMakeFiles/coins_core.dir/src/observables.c.o
+/usr/bin/ranlib lib/libcoins_core.a

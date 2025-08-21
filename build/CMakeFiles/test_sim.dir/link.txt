@@ -1,0 +1,1 @@
+/usr/bin/cc -Wl,--dependency-file=CMakeFiles/test_sim.dir/link.d CMakeFiles/test_sim.dir/tests/test_sim.c.o -o bin/test_sim  lib/libcoins_core.a -lm
