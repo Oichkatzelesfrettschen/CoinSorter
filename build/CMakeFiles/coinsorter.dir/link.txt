@@ -1,0 +1,1 @@
+/usr/bin/cc -Wl,--dependency-file=CMakeFiles/coinsorter.dir/link.d CMakeFiles/coinsorter.dir/src/coinsorter.c.o -o bin/coinsorter  lib/libcoins_core.a -lm
