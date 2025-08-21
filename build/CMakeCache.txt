@@ -15,7 +15,7 @@
 ########################
 
 //Build ncurses-based advanced UI
-BUILD_NCURSES_UI:BOOL=OFF
+BUILD_NCURSES_UI:BOOL=ON
 
 //Build superforce unified binary
 BUILD_SUPERFORCE:BOOL=ON
@@ -37,10 +37,7 @@ CMAKE_AR:FILEPATH=/usr/bin/ar
 
 //Choose the type of build, options are: None Debug Release RelWithDebInfo
 // MinSizeRel ...
-CMAKE_BUILD_TYPE:STRING=
-
-//Enable/Disable color output during build.
-CMAKE_COLOR_MAKEFILE:BOOL=ON
+CMAKE_BUILD_TYPE:STRING=Release
 
 //C compiler
 CMAKE_C_COMPILER:FILEPATH=/usr/bin/cc
@@ -63,7 +60,7 @@ CMAKE_C_FLAGS_DEBUG:STRING=-g
 CMAKE_C_FLAGS_MINSIZEREL:STRING=-Os -DNDEBUG
 
 //Flags used by the C compiler during RELEASE builds.
-CMAKE_C_FLAGS_RELEASE:STRING=-O3 -DNDEBUG
+CMAKE_C_FLAGS_RELEASE:STRING=-O3 -DNDEBUG -flto -march=native
 
 //Flags used by the C compiler during RELWITHDEBINFO builds.
 CMAKE_C_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG
@@ -85,6 +82,9 @@ CMAKE_EXE_LINKER_FLAGS_RELEASE:STRING=
 
 //Flags used by the linker during RELWITHDEBINFO builds.
 CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO:STRING=
+
+//Enable/Disable output of build database during the build.
+CMAKE_EXPORT_BUILD_DATABASE:BOOL=
 
 //Enable/Disable output of compile commands during generation.
 CMAKE_EXPORT_COMPILE_COMMANDS:BOOL=
@@ -146,8 +146,8 @@ CMAKE_INSTALL_SYSCONFDIR:PATH=etc
 //Path to a program.
 CMAKE_LINKER:FILEPATH=/usr/bin/ld
 
-//Path to a program.
-CMAKE_MAKE_PROGRAM:FILEPATH=/usr/bin/gmake
+//Program used to build from build.ninja files.
+CMAKE_MAKE_PROGRAM:FILEPATH=/usr/local/bin/ninja
 
 //Flags used by the linker during the creation of modules during
 // all build types.
@@ -265,6 +265,18 @@ CTEST_SUBMIT_RETRY_COUNT:STRING=3
 //How long to wait between timed-out CTest submissions.
 CTEST_SUBMIT_RETRY_DELAY:STRING=5
 
+//Path to a library.
+CURSES_CURSES_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libcurses.so
+
+//Path to a library.
+CURSES_FORM_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libform.so
+
+//Path to a file.
+CURSES_INCLUDE_PATH:PATH=/usr/include
+
+//Path to a library.
+CURSES_NCURSES_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libncurses.so
+
 //Value Computed by CMake
 CoinSorter_BINARY_DIR:STATIC=/home/runner/work/CoinSorter/CoinSorter/build
 
@@ -277,20 +289,14 @@ CoinSorter_SOURCE_DIR:STATIC=/home/runner/work/CoinSorter/CoinSorter
 //Maximum time allowed before CTest will kill the test.
 DART_TESTING_TIMEOUT:STRING=1500
 
-//Dot tool for use with Doxygen
-DOXYGEN_DOT_EXECUTABLE:FILEPATH=/usr/bin/dot
-
 //Exclude test sources from Doxygen
 DOXYGEN_EXCLUDE_TESTS:BOOL=ON
-
-//Doxygen documentation generation tool (https://www.doxygen.nl)
-DOXYGEN_EXECUTABLE:FILEPATH=/usr/bin/doxygen
 
 //Warn on undocumented members
 DOXYGEN_WARN_UNDOC:BOOL=ON
 
 //Generate API documentation with Doxygen
-ENABLE_DOXYGEN:BOOL=ON
+ENABLE_DOXYGEN:BOOL=OFF
 
 //Path to a program.
 GITCOMMAND:FILEPATH=/usr/bin/git
@@ -304,8 +310,20 @@ MEMORYCHECK_COMMAND:FILEPATH=MEMORYCHECK_COMMAND-NOTFOUND
 //File that contains suppressions for the memory checker
 MEMORYCHECK_SUPPRESSIONS_FILE:FILEPATH=
 
+//Arguments to supply to pkg-config
+PKG_CONFIG_ARGN:STRING=
+
+//pkg-config executable
+PKG_CONFIG_EXECUTABLE:FILEPATH=/usr/bin/pkg-config
+
 //Name of the computer/site where compile is being run
 SITE:STRING=pkrvmqc4gcfdwos
+
+//Path to a library.
+pkgcfg_lib_NCURSES_ncurses:FILEPATH=/usr/lib/x86_64-linux-gnu/libncurses.so
+
+//Path to a library.
+pkgcfg_lib_NCURSES_tinfo:FILEPATH=/usr/lib/x86_64-linux-gnu/libtinfo.so
 
 
 ########################
@@ -324,8 +342,6 @@ CMAKE_CACHE_MAJOR_VERSION:INTERNAL=3
 CMAKE_CACHE_MINOR_VERSION:INTERNAL=31
 //Patch version of cmake used to create the current loaded cache
 CMAKE_CACHE_PATCH_VERSION:INTERNAL=6
-//ADVANCED property for variable: CMAKE_COLOR_MAKEFILE
-CMAKE_COLOR_MAKEFILE-ADVANCED:INTERNAL=1
 //Path to CMake executable.
 CMAKE_COMMAND:INTERNAL=/usr/local/bin/cmake
 //Path to cpack program executable.
@@ -366,12 +382,14 @@ CMAKE_EXE_LINKER_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1
 CMAKE_EXE_LINKER_FLAGS_RELEASE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO
 CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_EXPORT_BUILD_DATABASE
+CMAKE_EXPORT_BUILD_DATABASE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_EXPORT_COMPILE_COMMANDS
 CMAKE_EXPORT_COMPILE_COMMANDS-ADVANCED:INTERNAL=1
 //Name of external makefile project generator.
 CMAKE_EXTRA_GENERATOR:INTERNAL=
 //Name of generator.
-CMAKE_GENERATOR:INTERNAL=Unix Makefiles
+CMAKE_GENERATOR:INTERNAL=Ninja
 //Generator instance identifier.
 CMAKE_GENERATOR_INSTANCE:INTERNAL=
 //Name of generator platform.
@@ -485,14 +503,18 @@ COVERAGE_EXTRA_FLAGS-ADVANCED:INTERNAL=1
 CTEST_SUBMIT_RETRY_COUNT-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CTEST_SUBMIT_RETRY_DELAY
 CTEST_SUBMIT_RETRY_DELAY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CURSES_CURSES_LIBRARY
+CURSES_CURSES_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CURSES_FORM_LIBRARY
+CURSES_FORM_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CURSES_INCLUDE_PATH
+CURSES_INCLUDE_PATH-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CURSES_NCURSES_LIBRARY
+CURSES_NCURSES_LIBRARY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: DART_TESTING_TIMEOUT
 DART_TESTING_TIMEOUT-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: DOXYGEN_DOT_EXECUTABLE
-DOXYGEN_DOT_EXECUTABLE-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: DOXYGEN_EXECUTABLE
-DOXYGEN_EXECUTABLE-ADVANCED:INTERNAL=1
-//Details about finding Doxygen
-FIND_PACKAGE_MESSAGE_DETAILS_Doxygen:INTERNAL=[/usr/bin/doxygen][cfound components: doxygen dot ][v1.9.8()]
+//Details about finding Curses
+FIND_PACKAGE_MESSAGE_DETAILS_Curses:INTERNAL=[/usr/lib/x86_64-linux-gnu/libcurses.so][/usr/include][v()]
 //ADVANCED property for variable: GITCOMMAND
 GITCOMMAND-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: MAKECOMMAND
@@ -501,6 +523,45 @@ MAKECOMMAND-ADVANCED:INTERNAL=1
 MEMORYCHECK_COMMAND-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: MEMORYCHECK_SUPPRESSIONS_FILE
 MEMORYCHECK_SUPPRESSIONS_FILE-ADVANCED:INTERNAL=1
+NCURSES_CFLAGS:INTERNAL=-D_DEFAULT_SOURCE;-D_XOPEN_SOURCE=600
+NCURSES_CFLAGS_I:INTERNAL=
+NCURSES_CFLAGS_OTHER:INTERNAL=-D_DEFAULT_SOURCE;-D_XOPEN_SOURCE=600
+NCURSES_FOUND:INTERNAL=1
+NCURSES_INCLUDEDIR:INTERNAL=/usr/include
+NCURSES_INCLUDE_DIRS:INTERNAL=
+NCURSES_LDFLAGS:INTERNAL=-L/usr/lib/x86_64-linux-gnu;-lncurses;-ltinfo
+NCURSES_LDFLAGS_OTHER:INTERNAL=
+NCURSES_LIBDIR:INTERNAL=/usr/lib/x86_64-linux-gnu
+NCURSES_LIBRARIES:INTERNAL=ncurses;tinfo
+NCURSES_LIBRARY_DIRS:INTERNAL=/usr/lib/x86_64-linux-gnu
+NCURSES_LIBS:INTERNAL=
+NCURSES_LIBS_L:INTERNAL=
+NCURSES_LIBS_OTHER:INTERNAL=
+NCURSES_LIBS_PATHS:INTERNAL=
+NCURSES_MODULE_NAME:INTERNAL=ncurses
+NCURSES_PREFIX:INTERNAL=/usr
+NCURSES_STATIC_CFLAGS:INTERNAL=-D_DEFAULT_SOURCE;-D_XOPEN_SOURCE=600
+NCURSES_STATIC_CFLAGS_I:INTERNAL=
+NCURSES_STATIC_CFLAGS_OTHER:INTERNAL=-D_DEFAULT_SOURCE;-D_XOPEN_SOURCE=600
+NCURSES_STATIC_INCLUDE_DIRS:INTERNAL=
+NCURSES_STATIC_LDFLAGS:INTERNAL=-L/usr/lib/x86_64-linux-gnu;-lncurses;-ltinfo;-ldl
+NCURSES_STATIC_LDFLAGS_OTHER:INTERNAL=
+NCURSES_STATIC_LIBDIR:INTERNAL=
+NCURSES_STATIC_LIBRARIES:INTERNAL=ncurses;tinfo;dl
+NCURSES_STATIC_LIBRARY_DIRS:INTERNAL=/usr/lib/x86_64-linux-gnu
+NCURSES_STATIC_LIBS:INTERNAL=
+NCURSES_STATIC_LIBS_L:INTERNAL=
+NCURSES_STATIC_LIBS_OTHER:INTERNAL=
+NCURSES_STATIC_LIBS_PATHS:INTERNAL=
+NCURSES_VERSION:INTERNAL=6.4.20240113
+NCURSES_ncurses_INCLUDEDIR:INTERNAL=
+NCURSES_ncurses_LIBDIR:INTERNAL=
+NCURSES_ncurses_PREFIX:INTERNAL=
+NCURSES_ncurses_VERSION:INTERNAL=
+//ADVANCED property for variable: PKG_CONFIG_ARGN
+PKG_CONFIG_ARGN-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: PKG_CONFIG_EXECUTABLE
+PKG_CONFIG_EXECUTABLE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: SITE
 SITE-ADVANCED:INTERNAL=1
 //linker supports push/pop state
@@ -509,4 +570,11 @@ _CMAKE_C_LINKER_PUSHPOP_STATE_SUPPORTED:INTERNAL=TRUE
 _CMAKE_LINKER_PUSHPOP_STATE_SUPPORTED:INTERNAL=TRUE
 //CMAKE_INSTALL_PREFIX during last run
 _GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=/usr/local
+__pkg_config_arguments_NCURSES:INTERNAL=QUIET;ncurses
+__pkg_config_checked_NCURSES:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_NCURSES_ncurses
+pkgcfg_lib_NCURSES_ncurses-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_NCURSES_tinfo
+pkgcfg_lib_NCURSES_tinfo-ADVANCED:INTERNAL=1
+prefix_result:INTERNAL=/usr/lib/x86_64-linux-gnu
 
