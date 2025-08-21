@@ -12,9 +12,17 @@ void generate_fbm(double *field, int nx, int ny, double hurst);
  * [-1,1]. */
 void generate_value_noise(double *field, int nx, int ny, unsigned seed,
                           int octaves);
-/** \brief Stub forward raytrace (placeholder). */
+/** \brief Forward raytrace simulation through 2D scalar field.
+ *  
+ *  Simulates rays propagating through a heightfield using simplified Beer-Lambert
+ *  attenuation. Computes transmission and scattering statistics.
+ */
 void forward_raytrace(const double *field, int nx, int ny);
-/** \brief Stub inverse retrieval (placeholder). */
+/** \brief Inverse retrieval using regularized iterative inversion.
+ *  
+ *  Reconstructs field from observations using Tikhonov regularization and 
+ *  gradient descent with smoothing constraints.
+ */
 void inverse_retrieve(const double *obs, int n, double *recon);
 
 /** \brief Jacobi Poisson solver for Laplacian(phi)=rhs (Dirichlet boundary

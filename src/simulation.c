@@ -215,19 +215,152 @@ int write_field_ppm(const char *filename, const double *field, int nx, int ny) {
   fclose(fp);
   return 1;
 }
-/** Placeholder forward raytrace. */
+/** \brief Forward raytrace simulation through 2D scalar field.
+ *
+ * Simulates rays propagating through a 2D heightfield, computing
+ * transmission/absorption characteristics. This implementation uses
+ * a simplified ray-tracing model where rays travel vertically through
+ * the field and attenuation depends on field height.
+ */
 void forward_raytrace(const double *field, int nx, int ny) {
-  (void)field;
-  (void)nx;
-  (void)ny;
-  puts("[sim] forward_raytrace stub");
+  if (!field || nx <= 0 || ny <= 0) {
+    printf("[sim] forward_raytrace: invalid parameters\n");
+    return;
+  }
+  
+  /* Find field statistics for normalization */
+  double min_val = field[0], max_val = field[0];
+  double sum = 0.0;
+  for (int i = 0; i < nx * ny; i++) {
+    if (field[i] < min_val) min_val = field[i];
+    if (field[i] > max_val) max_val = field[i];
+    sum += field[i];
+  }
+  double mean_val = sum / (nx * ny);
+  double range = max_val - min_val;
+  
+  /* Simulate forward raytracing with Beer-Lambert law approximation */
+  double total_transmission = 0.0;
+  double total_scattering = 0.0;
+  int rays_traced = 0;
+  
+  /* Sample rays across the field */
+  for (int y = 0; y < ny; y += 2) {  /* Sample every 2nd row for efficiency */
+    for (int x = 0; x < nx; x += 2) {  /* Sample every 2nd column */
+      int idx = y * nx + x;
+      double height = field[idx];
+      
+      /* Normalize height to absorption coefficient [0,1] */
+      double absorption_coeff = (height - min_val) / (range + 1e-9);
+      
+      /* Beer-Lambert: I = I0 * exp(-μt) where μ is absorption, t is thickness */
+      double path_length = fabs(height - mean_val) + 0.1;  /* Add baseline thickness */
+      double transmission = exp(-absorption_coeff * path_length);
+      double scattering = absorption_coeff * (1.0 - transmission);
+      
+      total_transmission += transmission;
+      total_scattering += scattering;
+      rays_traced++;
+    }
+  }
+  
+  if (rays_traced > 0) {
+    double avg_transmission = total_transmission / rays_traced;
+    double avg_scattering = total_scattering / rays_traced;
+    
+    printf("[sim] forward_raytrace: %dx%d field, %d rays\n", nx, ny, rays_traced);
+    printf("      avg transmission: %.4f, avg scattering: %.4f\n", 
+           avg_transmission, avg_scattering);
+    printf("      field range: [%.3f, %.3f], mean: %.3f\n", 
+           min_val, max_val, mean_val);
+  }
 }
-/** Placeholder inverse retrieval. */
+/** \brief Inverse retrieval using iterative regularized inversion.
+ *
+ * Reconstructs a field from observations using a simplified inverse
+ * modeling approach. This implementation uses Tikhonov regularization
+ * and gradient descent to recover the field from noisy/incomplete observations.
+ */
 void inverse_retrieve(const double *obs, int n, double *recon) {
-  (void)obs;
-  (void)n;
-  (void)recon;
-  puts("[sim] inverse_retrieve stub");
+  if (!obs || !recon || n <= 0) {
+    printf("[sim] inverse_retrieve: invalid parameters\n");
+    return;
+  }
+  
+  /* Initialize reconstruction with smoothed observations */
+  for (int i = 0; i < n; i++) {
+    recon[i] = obs[i];
+  }
+  
+  /* Compute observation statistics */
+  double obs_sum = 0.0, obs_sq_sum = 0.0;
+  double obs_min = obs[0], obs_max = obs[0];
+  for (int i = 0; i < n; i++) {
+    obs_sum += obs[i];
+    obs_sq_sum += obs[i] * obs[i];
+    if (obs[i] < obs_min) obs_min = obs[i];
+    if (obs[i] > obs_max) obs_max = obs[i];
+  }
+  double obs_mean = obs_sum / n;
+  double obs_var = (obs_sq_sum - obs_sum * obs_sum / n) / (n - 1);
+  double obs_std = sqrt(fabs(obs_var));
+  
+  /* Iterative regularized inversion with smoothing */
+  const int max_iterations = 50;
+  const double regularization = 0.01;
+  const double learning_rate = 0.1;
+  
+  for (int iter = 0; iter < max_iterations; iter++) {
+    double total_error = 0.0;
+    
+    /* Apply smoothing regularization */
+    for (int i = 1; i < n - 1; i++) {
+      /* Compute local second derivative (roughness penalty) */
+      double d2 = recon[i-1] - 2.0 * recon[i] + recon[i+1];
+      
+      /* Data fidelity term */
+      double data_error = recon[i] - obs[i];
+      
+      /* Combined gradient: data fidelity + regularization */
+      double gradient = data_error + regularization * d2;
+      
+      /* Gradient descent update */
+      recon[i] -= learning_rate * gradient;
+      
+      total_error += data_error * data_error;
+    }
+    
+    /* Boundary conditions - extrapolate from neighbors */
+    recon[0] = 2.0 * recon[1] - recon[2];
+    recon[n-1] = 2.0 * recon[n-2] - recon[n-3];
+    
+    /* Check convergence */
+    if (iter % 10 == 0) {
+      double rms_error = sqrt(total_error / n);
+      if (rms_error < 0.001 * obs_std) {
+        printf("[sim] inverse_retrieve: converged at iteration %d\n", iter);
+        break;
+      }
+    }
+  }
+  
+  /* Compute final reconstruction quality metrics */
+  double recon_sum = 0.0, diff_sum = 0.0, diff_sq_sum = 0.0;
+  for (int i = 0; i < n; i++) {
+    recon_sum += recon[i];
+    double diff = recon[i] - obs[i];
+    diff_sum += diff;
+    diff_sq_sum += diff * diff;
+  }
+  double recon_mean = recon_sum / n;
+  double rms_error = sqrt(diff_sq_sum / n);
+  double bias = diff_sum / n;
+  
+  printf("[sim] inverse_retrieve: %d points reconstructed\n", n);
+  printf("      obs range: [%.3f, %.3f], mean: %.3f, std: %.3f\n", 
+         obs_min, obs_max, obs_mean, obs_std);
+  printf("      reconstruction mean: %.3f, RMS error: %.6f, bias: %.6f\n", 
+         recon_mean, rms_error, bias);
 }
 
 /** Jacobi iterations returning average absolute residual. */
