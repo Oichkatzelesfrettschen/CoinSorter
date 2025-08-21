@@ -652,6 +652,19 @@ ContinuousSubmit/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ContinuousSubmit.dir/build.make CMakeFiles/ContinuousSubmit.dir/build
 .PHONY : ContinuousSubmit/fast
 
+#=============================================================================
+# Target rules for targets named docs
+
+# Build rule for target.
+docs: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 docs
+.PHONY : docs
+
+# fast build rule for target.
+docs/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/docs.dir/build.make CMakeFiles/docs.dir/build
+.PHONY : docs/fast
+
 src/beta.o: src/beta.c.o
 .PHONY : src/beta.o
 
@@ -1077,6 +1090,7 @@ help:
 	@echo "... NightlySubmit"
 	@echo "... NightlyTest"
 	@echo "... NightlyUpdate"
+	@echo "... docs"
 	@echo "... coins_core"
 	@echo "... coinsorter"
 	@echo "... superforce"

@@ -8,6 +8,8 @@ set(CMAKE_DEPENDS_GENERATOR "Unix Makefiles")
 set(CMAKE_MAKEFILE_DEPENDS
   "CMakeCache.txt"
   "/home/runner/work/CoinSorter/CoinSorter/CMakeLists.txt"
+  "CMakeDoxyfile.in"
+  "CMakeDoxygenDefaults.cmake"
   "CMakeFiles/3.31.6/CMakeCCompiler.cmake"
   "CMakeFiles/3.31.6/CMakeSystem.cmake"
   "/usr/local/share/cmake-3.31/Modules/CMakeCInformation.cmake"
@@ -24,6 +26,9 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/usr/local/share/cmake-3.31/Modules/Compiler/GNU-C.cmake"
   "/usr/local/share/cmake-3.31/Modules/Compiler/GNU.cmake"
   "/usr/local/share/cmake-3.31/Modules/DartConfiguration.tcl.in"
+  "/usr/local/share/cmake-3.31/Modules/FindDoxygen.cmake"
+  "/usr/local/share/cmake-3.31/Modules/FindPackageHandleStandardArgs.cmake"
+  "/usr/local/share/cmake-3.31/Modules/FindPackageMessage.cmake"
   "/usr/local/share/cmake-3.31/Modules/GNUInstallDirs.cmake"
   "/usr/local/share/cmake-3.31/Modules/Internal/CMakeCLinkerInformation.cmake"
   "/usr/local/share/cmake-3.31/Modules/Internal/CMakeCommonLinkerInformation.cmake"
@@ -48,6 +53,7 @@ set(CMAKE_MAKEFILE_OUTPUTS
 # Byproducts of CMake generate step:
 set(CMAKE_MAKEFILE_PRODUCTS
   "DartConfiguration.tcl"
+  "Doxyfile.docs"
   "CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
@@ -90,4 +96,5 @@ set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/ContinuousCoverage.dir/DependInfo.cmake"
   "CMakeFiles/ContinuousMemCheck.dir/DependInfo.cmake"
   "CMakeFiles/ContinuousSubmit.dir/DependInfo.cmake"
+  "CMakeFiles/docs.dir/DependInfo.cmake"
   )

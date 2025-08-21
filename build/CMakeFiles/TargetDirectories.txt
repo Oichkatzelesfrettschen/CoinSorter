@@ -35,6 +35,7 @@
 /home/runner/work/CoinSorter/CoinSorter/build/CMakeFiles/ContinuousCoverage.dir
 /home/runner/work/CoinSorter/CoinSorter/build/CMakeFiles/ContinuousMemCheck.dir
 /home/runner/work/CoinSorter/CoinSorter/build/CMakeFiles/ContinuousSubmit.dir
+/home/runner/work/CoinSorter/CoinSorter/build/CMakeFiles/docs.dir
 /home/runner/work/CoinSorter/CoinSorter/build/CMakeFiles/test.dir
 /home/runner/work/CoinSorter/CoinSorter/build/CMakeFiles/edit_cache.dir
 /home/runner/work/CoinSorter/CoinSorter/build/CMakeFiles/rebuild_cache.dir

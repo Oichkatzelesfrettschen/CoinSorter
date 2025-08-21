@@ -277,14 +277,20 @@ CoinSorter_SOURCE_DIR:STATIC=/home/runner/work/CoinSorter/CoinSorter
 //Maximum time allowed before CTest will kill the test.
 DART_TESTING_TIMEOUT:STRING=1500
 
+//Dot tool for use with Doxygen
+DOXYGEN_DOT_EXECUTABLE:FILEPATH=/usr/bin/dot
+
 //Exclude test sources from Doxygen
 DOXYGEN_EXCLUDE_TESTS:BOOL=ON
+
+//Doxygen documentation generation tool (https://www.doxygen.nl)
+DOXYGEN_EXECUTABLE:FILEPATH=/usr/bin/doxygen
 
 //Warn on undocumented members
 DOXYGEN_WARN_UNDOC:BOOL=ON
 
 //Generate API documentation with Doxygen
-ENABLE_DOXYGEN:BOOL=OFF
+ENABLE_DOXYGEN:BOOL=ON
 
 //Path to a program.
 GITCOMMAND:FILEPATH=/usr/bin/git
@@ -481,6 +487,12 @@ CTEST_SUBMIT_RETRY_COUNT-ADVANCED:INTERNAL=1
 CTEST_SUBMIT_RETRY_DELAY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: DART_TESTING_TIMEOUT
 DART_TESTING_TIMEOUT-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DOXYGEN_DOT_EXECUTABLE
+DOXYGEN_DOT_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DOXYGEN_EXECUTABLE
+DOXYGEN_EXECUTABLE-ADVANCED:INTERNAL=1
+//Details about finding Doxygen
+FIND_PACKAGE_MESSAGE_DETAILS_Doxygen:INTERNAL=[/usr/bin/doxygen][cfound components: doxygen dot ][v1.9.8()]
 //ADVANCED property for variable: GITCOMMAND
 GITCOMMAND-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: MAKECOMMAND
