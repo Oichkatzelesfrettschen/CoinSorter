@@ -1,10 +1,10 @@
-Start testing: Aug 21 17:21 UTC
+Start testing: Aug 21 17:23 UTC
 ----------------------------------------------------------
 1/5 Testing: basic
 1/5 Test: basic
 Command: "/home/runner/work/CoinSorter/CoinSorter/build/bin/test_basic"
 Directory: /home/runner/work/CoinSorter/CoinSorter/build
-"basic" start time: Aug 21 17:21 UTC
+"basic" start time: Aug 21 17:23 UTC
 Output:
 ----------------------------------------------------------
 basic tests passed
@@ -12,7 +12,7 @@ basic tests passed
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"basic" end time: Aug 21 17:21 UTC
+"basic" end time: Aug 21 17:23 UTC
 "basic" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -20,7 +20,7 @@ Test Passed.
 2/5 Test: sim
 Command: "/home/runner/work/CoinSorter/CoinSorter/build/bin/test_sim"
 Directory: /home/runner/work/CoinSorter/CoinSorter/build
-"sim" start time: Aug 21 17:21 UTC
+"sim" start time: Aug 21 17:23 UTC
 Output:
 ----------------------------------------------------------
 sim tests passed
@@ -28,7 +28,7 @@ sim tests passed
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"sim" end time: Aug 21 17:21 UTC
+"sim" end time: Aug 21 17:23 UTC
 "sim" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -36,16 +36,16 @@ Test Passed.
 3/5 Test: coin_adv
 Command: "/home/runner/work/CoinSorter/CoinSorter/build/bin/test_coin_adv"
 Directory: /home/runner/work/CoinSorter/CoinSorter/build
-"coin_adv" start time: Aug 21 17:21 UTC
+"coin_adv" start time: Aug 21 17:23 UTC
 Output:
 ----------------------------------------------------------
 warning: mass/diam solutions identical
 advanced coin tests passed
 <end of output>
-Test time =   5.85 sec
+Test time =   5.81 sec
 ----------------------------------------------------------
 Test Passed.
-"coin_adv" end time: Aug 21 17:21 UTC
+"coin_adv" end time: Aug 21 17:23 UTC
 "coin_adv" time elapsed: 00:00:05
 ----------------------------------------------------------
 
@@ -53,7 +53,7 @@ Test Passed.
 4/5 Test: area
 Command: "/home/runner/work/CoinSorter/CoinSorter/build/bin/test_area"
 Directory: /home/runner/work/CoinSorter/CoinSorter/build
-"area" start time: Aug 21 17:21 UTC
+"area" start time: Aug 21 17:23 UTC
 Output:
 ----------------------------------------------------------
 area test passed (coins=8 area=3133.1976)
@@ -61,7 +61,7 @@ area test passed (coins=8 area=3133.1976)
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"area" end time: Aug 21 17:21 UTC
+"area" end time: Aug 21 17:23 UTC
 "area" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -69,7 +69,7 @@ Test Passed.
 5/5 Test: observables
 Command: "/home/runner/work/CoinSorter/CoinSorter/build/bin/test_observables"
 Directory: /home/runner/work/CoinSorter/CoinSorter/build
-"observables" start time: Aug 21 17:21 UTC
+"observables" start time: Aug 21 17:23 UTC
 Output:
 ----------------------------------------------------------
 === Material Properties and Observables Test Suite ===
@@ -131,8 +131,8 @@ All material properties tests PASSED!
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"observables" end time: Aug 21 17:21 UTC
+"observables" end time: Aug 21 17:23 UTC
 "observables" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-End testing: Aug 21 17:21 UTC
+End testing: Aug 21 17:23 UTC
