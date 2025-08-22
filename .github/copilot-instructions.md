@@ -18,14 +18,15 @@ ctest --test-dir build --output-on-failure
 ```
 
 **Timing expectations:**
-- Configure: ~0.2 seconds. Set timeout to 30+ seconds.
-- Build: ~0.5 seconds. Set timeout to 60+ seconds.
-- Tests: ~6 seconds (includes canonicality checking). Set timeout to 120+ seconds.
+- Configure: ~0.2-2.5 seconds (cold start slower). Set timeout to 30+ seconds.
+- Build: ~0.5-9 seconds (parallel compilation). Set timeout to 60+ seconds.
+- Tests: ~1.5-7 seconds (coin_adv test takes ~6s for canonicality checking). Set timeout to 120+ seconds.
 
 **Alternative fast build script (optimized with Ninja + ccache):**
 ```bash
 chmod +x scripts/build.sh
 scripts/build.sh -DBUILD_NCURSES_UI=ON -DBUILD_TESTS=ON
+# Fast build takes ~3 seconds total
 ```
 
 **Build with documentation:**
@@ -33,6 +34,7 @@ scripts/build.sh -DBUILD_NCURSES_UI=ON -DBUILD_TESTS=ON
 # Requires: sudo apt-get install -y doxygen graphviz
 cmake -S . -B build -DENABLE_DOXYGEN=ON
 cmake --build build --target docs
+# Doc generation takes ~1 second
 # View: build/docs/html/index.html
 ```
 
@@ -79,6 +81,11 @@ sudo apt-get install -y doxygen graphviz
 ./build/bin/coinsorter 67 eur
 ./build/bin/coinsorter 67 cad
 
+# 4a. Additional currency systems:
+./build/bin/coinsorter 100 aud
+./build/bin/coinsorter 100 nzd  
+./build/bin/coinsorter 100 cny
+
 # 5. Simulation with file output:
 ./build/bin/superforce --sim --fbm-ppm --poisson --vectors
 # Verify *.ppm files are generated
@@ -87,6 +94,10 @@ sudo apt-get install -y doxygen graphviz
 echo "q" | ./build/bin/superforce_ui
 # For ncurses UI (if built):
 timeout 3 ./build/bin/superforce_ncui || echo "OK"
+
+# 7. Test help and error handling:
+./build/bin/coinsorter --help  # Shows usage, exits with code 1
+./build/bin/coinsorter invalid_input invalid_system  # Shows usage with available systems
 ```
 
 **ALWAYS run these commands before finishing any change:**
@@ -119,6 +130,8 @@ After building, artifacts land in `build/bin/` and `build/lib/`:
   ```bash
   ./build/bin/coinsorter [amount] [system] [--json] [--audit] [--opt=count|mass|diam|area]
   # Example: ./build/bin/coinsorter 137 usd --json
+  # Note: --help shows usage but exits with code 1
+  # Note: --version prompts for input instead of showing version
   ```
 
 - **`superforce`** - Unified demo with physics, simulation, and coin solving
@@ -183,9 +196,15 @@ rm -rf build && cmake -S . -B build [options] && cmake --build build --parallel
 ```bash
 # Invalid currency/amount combinations:
 # Some currencies can't make change for certain amounts (by design)
+# Invalid inputs show usage and exit with code 1
 
 # Color output issues:
 export NO_COLOR=1  # Disable ANSI colors
+
+# Command behavior notes:
+# --help shows usage but exits with status 1 (not 0)
+# --version prompts for input instead of displaying version
+# Invalid arguments display usage with available systems list
 ```
 
 ## Key Project Structure
@@ -214,7 +233,10 @@ export NO_COLOR=1  # Disable ANSI colors
 
 ## Performance Notes
 
-- Build times are very fast (~0.5 seconds)
-- Test suite completes in ~6 seconds
+- Configure times: ~0.2-2.5 seconds (first run slower)
+- Build times: ~0.5-9 seconds (parallel compilation)  
+- Test suite completes in ~1.5-7 seconds (coin_adv test takes ~6s)
+- Fast build script: ~3 seconds total
+- Documentation generation: ~1 second
 - Simulation file generation is near-instantaneous
 - Most operations are suitable for interactive use
