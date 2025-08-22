@@ -73,6 +73,9 @@ extern const PhysicsComponent physics_casimir_complete_component;
 /** \brief QFT renormalization group analysis component. */
 extern const PhysicsComponent physics_qft_rg_component;
 
+/** \brief Complete physics demonstration combining QFT + Casimir + Environment. */
+extern const PhysicsComponent physics_complete_demo_component;
+
 /* === Component Registration === */
 
 /** \brief Register all physics component wrappers with the framework. */
@@ -80,6 +83,9 @@ void physics_components_register_all(void);
 
 /** \brief Create a complete physics demonstration context. */
 PhysicsContext *physics_create_demo_context(void);
+
+/** \brief Create a complete physics demonstration context with composite components. */
+PhysicsContext *physics_create_composite_demo_context(void);
 
 #ifdef __cplusplus
 }

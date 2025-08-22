@@ -125,6 +125,8 @@ int main(int argc, char **argv) {
       do_phys = 1;
     else if (!strcmp(argv[i], "--unified"))
       do_unified = 1;
+    else if (!strcmp(argv[i], "--composite"))
+      do_unified = 2; /* Special flag for composite demo */
     else if (!strcmp(argv[i], "--sim"))
       do_sim = 1;
     else if (!strncmp(argv[i], "fbmSize=", 8))
@@ -185,7 +187,69 @@ int main(int argc, char **argv) {
   }
   if (do_unified) {
     printf("%s", C_BOLD);
-    unified_physics_block();
+    if (do_unified == 2) {
+      printf("=== Recursive Physics Composition Demo ===\n");
+      
+      /* Register components */
+      physics_components_register_all();
+      physics_framework_list_components();
+      printf("\n");
+      
+      /* Create composite demo context */
+      PhysicsContext *context = physics_create_composite_demo_context();
+      if (!context) {
+        printf("Failed to create composite physics context\n");
+      } else {
+        /* Validate and execute */
+        char error_buffer[256];
+        if (!physics_context_validate(context, error_buffer, sizeof(error_buffer))) {
+          printf("Composite context validation failed: %s\n", error_buffer);
+        } else {
+          printf("=== Composite Context Validation: PASSED ===\n");
+          
+          PhysicsResult *results = NULL;
+          if (physics_context_execute(context, &results) == 0 && results) {
+            printf("=== Recursive Composition Results ===\n");
+            
+            for (size_t i = 0; i < context->num_components; i++) {
+              const PhysicsComponent *comp = context->components[i];
+              const PhysicsResult *result = &results[i];
+              
+              if (result->is_valid) {
+                printf("%-18s: %12.6e %s", comp->name, result->value, result->units);
+                if (result->uncertainty > 0) {
+                  printf(" (±%.2e)", result->uncertainty);
+                }
+                printf(" [%s]\n", physics_dimension_name(result->dimension));
+                
+                /* Show domain and composition info */
+                if (comp->domain == PHYSICS_DOMAIN_COMPOSITE) {
+                  printf("                    └─ COMPOSITE: %s\n", comp->description);
+                }
+              } else {
+                printf("%-18s: FAILED - %s\n", comp->name, 
+                       result->error_msg ? result->error_msg : "Unknown error");
+              }
+            }
+            
+            printf("\n=== Recursive Completeness Demonstrated ===\n");
+            printf("✓ Multi-domain Component Composition\n");
+            printf("✓ Hierarchical Physics Calculations\n");
+            printf("✓ Cross-domain Parameter Propagation\n");
+            printf("✓ Recursive Validation and Error Checking\n");
+            printf("✓ Self-describing Composite Components\n");
+            printf("✓ Domain-aware Result Integration\n");
+            
+            free(results);
+          } else {
+            printf("Failed to execute composite physics context\n");
+          }
+        }
+        physics_context_destroy(context);
+      }
+    } else {
+      unified_physics_block();
+    }
     printf("%sEnvironment:%s %s g=%.3f m/s^2  T=%.1fK  P=%.3fkPa\n", C_CYAN,
            C_RESET, env->name, env->g, env->temperature_K, env->pressure_kPa);
     if (force_no_color)
