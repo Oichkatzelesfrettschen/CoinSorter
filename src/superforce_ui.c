@@ -39,10 +39,15 @@ static void banner(void) {
 
 /** Display concise current state summary. */
 static void show_state(const AppState *S) {
+  const char *opt_name = "count";
+  switch (S->opt_mode) {
+    case OPT_MASS: opt_name = "mass"; break;
+    case OPT_DIAMETER: opt_name = "diam"; break;
+    case OPT_AREA: opt_name = "area"; break;
+    default: opt_name = "count"; break;
+  }
   printf("System=%s amt=%d opt=%s env=%s g=%.3f thermal=%s fbm=%d H=%.2f %s\n",
-         S->coin_sys->system_name, S->amount,
-         S->opt_mode == OPT_COUNT ? "count"
-                                  : (S->opt_mode == OPT_MASS ? "mass" : "diam"),
+         S->coin_sys->system_name, S->amount, opt_name,
          S->env->name, S->env->g, S->thermal ? "on" : "off", S->fbm_size,
          S->fbm_H, S->fbm_field ? "[fbm]" : "");
 }
@@ -50,9 +55,9 @@ static void show_state(const AppState *S) {
 /** Show command help. */
 static void help_menu(void) {
   puts("Commands:\n"
-       "  c  cycle coin system (usd/eur)\n"
+       "  c/y cycle coin system (usd/eur)\n"
        "  a  set amount\n"
-       "  o  cycle optimize mode (count/mass/diam)\n"
+       "  o  cycle optimize mode (count/mass/diam/area)\n"
        "  e  cycle environment\n"
        "  t  toggle thermal Casimir\n"
        "  s  solve coin change\n"
@@ -294,6 +299,7 @@ int main(void) {
       help_menu();
       break;
     case 'c':
+    case 'y':
       S.coin_sys = (strcmp(S.coin_sys->system_name, "usd") == 0)
                        ? get_coin_system("eur")
                        : get_coin_system("usd");
@@ -307,7 +313,7 @@ int main(void) {
       }
       break;
     case 'o':
-      S.opt_mode = (S.opt_mode == OPT_DIAMETER ? OPT_COUNT : (S.opt_mode + 1));
+      S.opt_mode = (S.opt_mode + 1) % OPT_MODE_COUNT;
       break;
     case 'e':
       S.env = cycle_env(S.env);

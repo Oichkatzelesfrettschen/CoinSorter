@@ -218,7 +218,7 @@ Single hidden-layer network (ReLU) with:
 
 Keyboard shortcuts (subset):
 
-* `h` help, `o` cycle optimization, `c` cycle currency, `e` cycle environment, `f` generate fBm, `p` Poisson solve, `v` vector field, `m` MLP demo, `q` quit.
+* `h` help, `o` cycle optimization (count/mass/diam/area), `c`/`y` cycle currency, `e` cycle environment, `t` toggle thermal, `f` generate fBm, `p` Poisson solve, `v` vector field, `m` MLP demo, `q` quit.
 
 ### Ncurses UI (`superforce_ncui`)
 
@@ -226,17 +226,18 @@ Features:
 
 * Separate panes: status, change solution, simulation preview ASCII, help.
 * Mouse: click bracketed buttons (`[+]`, `[-]`, `[opt]`, `[sys]`, `[env]`, `[fbm]`, `[val]`, `[solve]`, `[json]`, `[pois]`, `[vec]`, `[mlp]`, `[phys]`).
-* Keys mirror mouse: `+ - o y e f n c j p v m g` etc.
+* Keys mirror mouse: `+ - o y e f n c j p v m g t` etc.
 * `n` or `[val]` generates value noise in place of fBm; `f` or `[fbm]` regenerates diamond–square fBm.
 * Optimization cycle includes area objective.
 * Poisson: iterative batches show progress (residual at bottom of sim pane & status line).
 * JSON export: key `j` or `[json]` writes `ncui_change.json` in current directory.
 * Live MLP: key `m` prints epoch/loss updates.
+* Thermal Casimir toggle: key `t` enables/disables thermal effects in physics calculations.
 * Physics overlay toggle & area objective cycling.
 * Value noise generation (`[val]` button or `n` key) alongside fBm.
 * Vector arrow overlay toggle (`v` key / `[vec]` button) renders 8‑direction arrows colored by magnitude.
 * Residual heatmap toggle (`r` key) pseudo‑colors Poisson residual magnitude atop the field (legend implicit; hotter colors = higher residual).
-* Status line flags: `v` indicates arrows active, `r` indicates residual heatmap active.
+* Status line flags: `v` indicates arrows active, `r` indicates residual heatmap active, `T` indicates thermal Casimir enabled.
 * Color pairs differentiate panes & overlays (requires terminal color support).
 
 ---
