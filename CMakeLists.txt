@@ -21,12 +21,14 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 add_library(coins_core
     src/coin_algorithms.c
     src/coin_systems.c
-  src/env.c
+    src/env.c
     src/beta.c
     src/casimir.c
-  src/simulation.c
-  src/color.c
-  src/observables.c)
+    src/simulation.c
+    src/color.c
+    src/observables.c
+    src/physics_framework.c
+    src/physics_components.c)
 
 add_executable(coinsorter src/coinsorter.c)
 target_link_libraries(coinsorter PRIVATE coins_core m)
@@ -93,6 +95,10 @@ if(BUILD_TESTS)
   target_link_libraries(test_observables PRIVATE coins_core m)
   target_compile_options(test_observables PRIVATE -Wall -Wextra -Werror)
   add_test(NAME observables COMMAND test_observables)
+  add_executable(test_physics_framework tests/test_physics_framework.c)
+  target_link_libraries(test_physics_framework PRIVATE coins_core m)
+  target_compile_options(test_physics_framework PRIVATE -Wall -Wextra -Werror)
+  add_test(NAME physics_framework COMMAND test_physics_framework)
   include(CTest)
 endif()
 
