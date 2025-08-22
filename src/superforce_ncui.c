@@ -171,10 +171,11 @@ static void draw_status(WINDOW *w, App *A) {
   ADD_BTN("phys", ACT_PHYS);
 #undef ADD_BTN
   mvwprintw(w, y + 1, 2,
-            "amt=%d opt=%s env=%s g=%.2f H=%.2f N=%d resid=%+.2g E=%.3g%s%s",
+            "amt=%d opt=%s env=%s g=%.2f H=%.2f N=%d resid=%+.2g E=%.3g%s%s%s",
             A->amount, opt_label(A->opt), A->env->name, A->env->g, A->fbm_H,
             A->fbm_size, A->last_resid, A->energy_avg,
-            A->show_vectors ? " v" : "", A->show_residual ? " r" : "");
+            A->show_vectors ? " v" : "", A->show_residual ? " r" : "",
+            A->thermal ? " T" : "");
   wrefresh(w);
 }
 
@@ -183,13 +184,13 @@ static void draw_help(WINDOW *w) {
   box(w, 0, 0);
   int r = 1;
   mvwprintw(w, r++, 2,
-            "Keys: q quit + - amt o opt y system e env f fbm n value noise");
+            "Keys: q quit + - amt o opt y system e env f fbm n value noise t thermal");
   mvwprintw(
       w, r++, 2,
       "       s/S size h/H Hurst c solve j json p poisson v vectors r resid");
   mvwprintw(w, r++, 2, "       g physics m MLP");
   mvwprintw(w, r++, 2, "Mouse: click buttons in status bar");
-  mvwprintw(w, r++, 2, "Energy avg shown when vectors computed (vec)");
+  mvwprintw(w, r++, 2, "Status flags: v=vectors r=residual T=thermal");
   mvwprintw(w, r++, 2, "JSON -> ncui_change.json");
   wrefresh(w);
 }
@@ -712,6 +713,9 @@ int main(void) {
         if (A.show_physics)
           compute_physics(&A);
         draw_sim(w_sim, &A);
+        break;
+      case 't':
+        A.thermal = !A.thermal;
         break;
       case '?':
         draw_help(w_help);
