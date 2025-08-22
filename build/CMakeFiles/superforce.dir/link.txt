@@ -1,1 +1,0 @@
-/usr/bin/cc -Wl,--dependency-file=CMakeFiles/superforce.dir/link.d CMakeFiles/superforce.dir/src/superforce_main.c.o -o bin/superforce  lib/libcoins_core.a -lm
