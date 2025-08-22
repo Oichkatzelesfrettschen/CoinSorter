@@ -18,15 +18,16 @@ ctest --test-dir build --output-on-failure
 ```
 
 **Timing expectations:**
-- Configure: ~0.2-2.5 seconds (cold start slower). Set timeout to 30+ seconds.
-- Build: ~0.5-9 seconds (parallel compilation). Set timeout to 60+ seconds.
-- Tests: ~1.5-7 seconds (coin_adv test takes ~6s for canonicality checking). Set timeout to 120+ seconds.
+- Configure: ~0.2-1.1 seconds (cold start slower). Set timeout to 30+ seconds.
+- Build: ~0.5-3 seconds (parallel compilation). Set timeout to 60+ seconds.
+- Tests: ~1.5-6 seconds (coin_adv test takes ~6s for canonicality checking). Set timeout to 120+ seconds.
 
 **Alternative fast build script (optimized with Ninja + ccache):**
 ```bash
 chmod +x scripts/build.sh
 scripts/build.sh -DBUILD_NCURSES_UI=ON -DBUILD_TESTS=ON
-# Fast build takes ~3 seconds total
+# Fast build takes ~2.7 seconds total (much faster than standard build)
+# Test time: ~1.6 seconds (faster due to optimization)
 ```
 
 **Build with documentation:**
@@ -34,7 +35,7 @@ scripts/build.sh -DBUILD_NCURSES_UI=ON -DBUILD_TESTS=ON
 # Requires: sudo apt-get install -y doxygen graphviz
 cmake -S . -B build -DENABLE_DOXYGEN=ON
 cmake --build build --target docs
-# Doc generation takes ~1 second
+# Doc generation takes ~0.4-1 second
 # View: build/docs/html/index.html
 ```
 
@@ -57,9 +58,9 @@ sudo apt-get install -y doxygen graphviz
 ```
 
 **Available build tools (automatic detection):**
-- `ninja` (preferred, faster builds)
+- `ninja` (preferred, faster builds - auto-detected by fast build script)
 - `make` (fallback)
-- `ccache` (automatic if available)
+- `ccache` (automatic if available, significantly speeds up rebuilds)
 
 ## Validation
 
@@ -95,9 +96,9 @@ echo "q" | ./build/bin/superforce_ui
 # For ncurses UI (if built):
 timeout 3 ./build/bin/superforce_ncui || echo "OK"
 
-# 7. Test help and error handling:
-./build/bin/coinsorter --help  # Shows usage, exits with code 1
-./build/bin/coinsorter invalid_input invalid_system  # Shows usage with available systems
+# 8. Test additional features:
+./build/bin/coinsorter 137 usd --audit  # Test canonicality audit
+./build/bin/coinsorter --selftest       # Run internal validation tests
 ```
 
 **ALWAYS run these commands before finishing any change:**
@@ -233,10 +234,10 @@ export NO_COLOR=1  # Disable ANSI colors
 
 ## Performance Notes
 
-- Configure times: ~0.2-2.5 seconds (first run slower)
-- Build times: ~0.5-9 seconds (parallel compilation)  
-- Test suite completes in ~1.5-7 seconds (coin_adv test takes ~6s)
-- Fast build script: ~3 seconds total
-- Documentation generation: ~1 second
+- Configure times: ~0.2-1.1 seconds (first run slower)
+- Build times: ~0.5-3 seconds (parallel compilation)  
+- Test suite completes in ~1.5-6 seconds (coin_adv test takes ~6s)
+- Fast build script: ~2.7 seconds total (configure + build + test ~4.3s total)
+- Documentation generation: ~0.4-1 second
 - Simulation file generation is near-instantaneous
 - Most operations are suitable for interactive use
