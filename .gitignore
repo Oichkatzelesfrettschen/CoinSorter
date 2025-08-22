@@ -10,6 +10,9 @@ cmake_install.cmake
 Makefile
 *.cmake
 
+# Generated simulation files
+*.ppm
+
 # Compiled object files
 *.o
 *.obj
