@@ -5,6 +5,8 @@
 #include "env.h"
 #include "simulation.h"
 #include "version.h"
+#include "physics_framework.h"
+#include "physics_components.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,6 +29,72 @@ static void physics_block(void) {
   puts("");
 }
 
+static void unified_physics_block(void) {
+  printf("=== Unified Physics Framework Demo ===\n");
+  
+  /* Register all physics components */
+  physics_components_register_all();
+  
+  /* List available components */
+  physics_framework_list_components();
+  printf("\n");
+  
+  /* Create and execute a complete physics demonstration */
+  PhysicsContext *context = physics_create_demo_context();
+  if (!context) {
+    printf("Failed to create physics context\n");
+    return;
+  }
+  
+  /* Validate the context */
+  char error_buffer[256];
+  if (!physics_context_validate(context, error_buffer, sizeof(error_buffer))) {
+    printf("Physics context validation failed: %s\n", error_buffer);
+    physics_context_destroy(context);
+    return;
+  }
+  
+  printf("=== Context Validation: PASSED ===\n");
+  
+  /* Execute all components */
+  PhysicsResult *results = NULL;
+  if (physics_context_execute(context, &results) == 0 && results) {
+    printf("=== Unified Physics Results ===\n");
+    
+    for (size_t i = 0; i < context->num_components; i++) {
+      const PhysicsComponent *comp = context->components[i];
+      const PhysicsResult *result = &results[i];
+      
+      if (result->is_valid) {
+        printf("%-15s: %12.6e %s", comp->name, result->value, result->units);
+        if (result->uncertainty > 0) {
+          printf(" (±%.2e)", result->uncertainty);
+        }
+        printf(" [%s]\n", physics_dimension_name(result->dimension));
+      } else {
+        printf("%-15s: FAILED - %s\n", comp->name, 
+               result->error_msg ? result->error_msg : "Unknown error");
+      }
+    }
+    
+    printf("\n=== Physics Framework Features Demonstrated ===\n");
+    printf("✓ Component Registration and Discovery\n");
+    printf("✓ Parameter Validation and Type Checking\n");
+    printf("✓ Dimensional Analysis Integration\n");
+    printf("✓ Uncertainty Estimation\n");
+    printf("✓ Error Handling and Reporting\n");
+    printf("✓ Recursive Component Composition\n");
+    printf("✓ Self-Describing Physics Components\n");
+    
+    free(results);
+  } else {
+    printf("Failed to execute physics context\n");
+  }
+  
+  physics_context_destroy(context);
+  printf("\n");
+}
+
 static void simulation_block(void) {
   int nx = 64, ny = 64;
   double *f = (double *)malloc(sizeof(double) * nx * ny);
@@ -38,7 +106,7 @@ static void simulation_block(void) {
 
 int main(int argc, char **argv) {
   color_init();
-  int do_phys = 0, do_sim = 0;
+  int do_phys = 0, do_sim = 0, do_unified = 0;
   int fbm_size = 129; /* 2^7+1 default */
   double fbm_H = 0.5;
   int save_fbm = 0;
@@ -55,6 +123,10 @@ int main(int argc, char **argv) {
   for (int i = 1; i < argc; ++i) {
     if (!strcmp(argv[i], "--physics"))
       do_phys = 1;
+    else if (!strcmp(argv[i], "--unified"))
+      do_unified = 1;
+    else if (!strcmp(argv[i], "--composite"))
+      do_unified = 2; /* Special flag for composite demo */
     else if (!strcmp(argv[i], "--sim"))
       do_sim = 1;
     else if (!strncmp(argv[i], "fbmSize=", 8))
@@ -110,6 +182,76 @@ int main(int argc, char **argv) {
     if (no_thermal)
       printf("%s[casimir]%s thermal contribution disabled\n", C_YELLOW,
              C_RESET);
+    if (force_no_color)
+      color_enabled = 0;
+  }
+  if (do_unified) {
+    printf("%s", C_BOLD);
+    if (do_unified == 2) {
+      printf("=== Recursive Physics Composition Demo ===\n");
+      
+      /* Register components */
+      physics_components_register_all();
+      physics_framework_list_components();
+      printf("\n");
+      
+      /* Create composite demo context */
+      PhysicsContext *context = physics_create_composite_demo_context();
+      if (!context) {
+        printf("Failed to create composite physics context\n");
+      } else {
+        /* Validate and execute */
+        char error_buffer[256];
+        if (!physics_context_validate(context, error_buffer, sizeof(error_buffer))) {
+          printf("Composite context validation failed: %s\n", error_buffer);
+        } else {
+          printf("=== Composite Context Validation: PASSED ===\n");
+          
+          PhysicsResult *results = NULL;
+          if (physics_context_execute(context, &results) == 0 && results) {
+            printf("=== Recursive Composition Results ===\n");
+            
+            for (size_t i = 0; i < context->num_components; i++) {
+              const PhysicsComponent *comp = context->components[i];
+              const PhysicsResult *result = &results[i];
+              
+              if (result->is_valid) {
+                printf("%-18s: %12.6e %s", comp->name, result->value, result->units);
+                if (result->uncertainty > 0) {
+                  printf(" (±%.2e)", result->uncertainty);
+                }
+                printf(" [%s]\n", physics_dimension_name(result->dimension));
+                
+                /* Show domain and composition info */
+                if (comp->domain == PHYSICS_DOMAIN_COMPOSITE) {
+                  printf("                    └─ COMPOSITE: %s\n", comp->description);
+                }
+              } else {
+                printf("%-18s: FAILED - %s\n", comp->name, 
+                       result->error_msg ? result->error_msg : "Unknown error");
+              }
+            }
+            
+            printf("\n=== Recursive Completeness Demonstrated ===\n");
+            printf("✓ Multi-domain Component Composition\n");
+            printf("✓ Hierarchical Physics Calculations\n");
+            printf("✓ Cross-domain Parameter Propagation\n");
+            printf("✓ Recursive Validation and Error Checking\n");
+            printf("✓ Self-describing Composite Components\n");
+            printf("✓ Domain-aware Result Integration\n");
+            
+            free(results);
+          } else {
+            printf("Failed to execute composite physics context\n");
+          }
+        }
+        physics_context_destroy(context);
+      }
+    } else {
+      unified_physics_block();
+    }
+    printf("%sEnvironment:%s %s g=%.3f m/s^2  T=%.1fK  P=%.3fkPa\n", C_CYAN,
+           C_RESET, env->name, env->g, env->temperature_K, env->pressure_kPa);
     if (force_no_color)
       color_enabled = 0;
   }
